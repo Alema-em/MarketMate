@@ -8,6 +8,7 @@ import { StockListSkeleton } from "@/components/stocks/StockListSkeleton";
 import { StockSearch } from "@/components/stocks/StockSearch";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { useWatchlist } from "@/hooks/useWatchlist";
+import { useCurrency } from "@/context/CurrencyContext";
 
 export default function WatchlistPage() {
   const {
@@ -15,6 +16,7 @@ export default function WatchlistPage() {
     loading,
     quotesRefreshing,
     error,
+    dataError,
     rateLimited,
     usingFallback,
     refresh,
@@ -24,6 +26,7 @@ export default function WatchlistPage() {
     isEmpty,
     isDemo,
   } = useWatchlist();
+  const { displayCurrency, ratesStale, ratesUnavailable } = useCurrency();
 
   const gainers = items.filter((i) => i.changePercent >= 0).length;
   const losers = items.length - gainers;
@@ -40,6 +43,9 @@ export default function WatchlistPage() {
             error={error}
             onRefresh={refresh}
             lastUpdated={lastUpdated}
+            displayCurrency={displayCurrency}
+            fxStale={ratesStale}
+            fxUnavailable={ratesUnavailable}
           />
         )}
 
@@ -62,7 +68,11 @@ export default function WatchlistPage() {
           </section>
         )}
 
-        {isEmpty ? (
+        {isEmpty && dataError ? (
+          <p className="rounded-xl border border-loss/30 bg-loss-muted px-4 py-3 text-sm text-loss">
+            {dataError}
+          </p>
+        ) : isEmpty ? (
           <EmptyState
             icon={Star}
             title="Your watchlist is empty"

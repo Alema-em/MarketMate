@@ -48,6 +48,15 @@ export function writeQuoteCache(
   }
 }
 
+export function clearQuoteCache(): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    /* ignore */
+  }
+}
+
 export function canFetchNetwork(force: boolean): boolean {
   if (force) return true;
   return Date.now() - lastNetworkFetchAt >= QUOTE_THROTTLE_MS;

@@ -17,6 +17,7 @@ import {
   removeWatchlistItem,
 } from "@/lib/firestore/watchlist";
 import type { WatchlistItem } from "@/types";
+import { getFriendlyFirestoreError } from "@/lib/errors/user-messages";
 import type { WatchlistEntry } from "@/types/stocks";
 import { quoteToWatchlistItem } from "@/lib/stocks/merge";
 import { getFallbackQuote } from "@/lib/stocks/fallback-data";
@@ -67,7 +68,8 @@ export function useWatchlist() {
         setLoading(false);
       },
       (err) => {
-        setError(err.message);
+        console.error("Watchlist snapshot error:", err);
+        setError(getFriendlyFirestoreError());
         setLoading(false);
       }
     );
@@ -143,5 +145,6 @@ export function useWatchlist() {
     saving,
     isEmpty: !loading && entries.length === 0,
     isDemo,
+    dataError: error,
   };
 }

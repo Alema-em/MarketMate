@@ -1,10 +1,12 @@
+"use client";
+
 import { Pencil, TrendingDown, TrendingUp, Trash2 } from "lucide-react";
 import type { Stock } from "@/types";
+import { useCurrency } from "@/context/CurrencyContext";
 import {
   calculateStockGain,
   calculateStockGainPercent,
   calculateStockValue,
-  formatCurrency,
   formatPercent,
 } from "@/lib/finance";
 
@@ -21,6 +23,7 @@ export function StockCard({
   onEdit,
   onDelete,
 }: StockCardProps) {
+  const { formatUsd } = useCurrency();
   const gain = calculateStockGain(stock);
   const gainPercent = calculateStockGainPercent(stock);
   const isPositive = gain >= 0;
@@ -87,13 +90,13 @@ export function StockCard({
         className={`mt-4 grid gap-3 ${compact ? "grid-cols-2" : "grid-cols-2 sm:grid-cols-4"}`}
       >
         <Metric label="Shares" value={stock.shares.toString()} />
-        <Metric label="Avg cost" value={formatCurrency(stock.avgCost)} />
-        <Metric label="Price" value={formatCurrency(stock.currentPrice)} />
+        <Metric label="Avg cost" value={formatUsd(stock.avgCost)} />
+        <Metric label="Price" value={formatUsd(stock.currentPrice)} />
         <Metric
           label="Value"
-          value={formatCurrency(value)}
+          value={formatUsd(value)}
           highlight={isPositive ? "gain" : "loss"}
-          sub={formatCurrency(gain)}
+          sub={formatUsd(gain)}
         />
       </section>
     </article>

@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "clean:dev": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/clean-dev.ps1",
+    "predev": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/clean-dev.ps1",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

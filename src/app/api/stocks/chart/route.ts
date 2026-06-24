@@ -1,16 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import { buildPortfolioChart } from "@/lib/stocks/portfolio-chart";
+import {
+  FALLBACK_CHART_DATA,
+  scaleChartToValue,
+} from "@/lib/stocks/fallback-data";
 import type { PortfolioHolding } from "@/types/stocks";
 
 export async function POST(request: NextRequest) {
+  let currentValue = 0;
+  let holdings: PortfolioHolding[] = [];
+
   try {
     const body = (await request.json()) as {
       holdings?: PortfolioHolding[];
       currentValue?: number;
     };
 
-    const holdings = body.holdings ?? [];
-    const currentValue = body.currentValue ?? 0;
+    holdings = body.holdings ?? [];
+    currentValue = body.currentValue ?? 0;
 
     if (holdings.length === 0) {
       return NextResponse.json({
@@ -31,12 +38,11 @@ export async function POST(request: NextRequest) {
       rateLimited: fromFallback,
     });
   } catch (err) {
-    return NextResponse.json(
-      {
-        error:
-          err instanceof Error ? err.message : "Failed to build portfolio chart",
-      },
-      { status: 500 }
-    );
+    console.error("Chart API error:", err);
+    return NextResponse.json({
+      data: scaleChartToValue(FALLBACK_CHART_DATA, currentValue),
+      fromFallback: true,
+      rateLimited: true,
+    });
   }
 }

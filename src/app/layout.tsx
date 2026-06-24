@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
+import { CurrencyProvider } from "@/context/CurrencyContext";
 import { QuotesProvider } from "@/context/QuotesContext";
 import { PortfolioModalProvider } from "@/context/PortfolioModalContext";
 import { InvestmentModal } from "@/components/portfolio/InvestmentModal";
@@ -26,12 +27,14 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className={`${inter.variable} font-sans antialiased`}>
         <AuthProvider>
-          <QuotesProvider>
-            <PortfolioModalProvider>
-              {children}
-              <InvestmentModal />
-            </PortfolioModalProvider>
-          </QuotesProvider>
+          <CurrencyProvider>
+            <QuotesProvider>
+              <PortfolioModalProvider>
+                {children}
+                <InvestmentModal />
+              </PortfolioModalProvider>
+            </QuotesProvider>
+          </CurrencyProvider>
         </AuthProvider>
       </body>
     </html>

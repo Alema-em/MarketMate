@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateInvestingReply, GeminiError } from "@/lib/ai/gemini";
+import { generateInvestingReply } from "@/lib/ai/gemini";
 import {
   buildFallbackInvestingReply,
   getFriendlyAIError,
@@ -11,6 +11,10 @@ export async function POST(request: NextRequest) {
   let requestedPortfolio: PortfolioContextPayload = {
     isEmpty: true,
     isDemo: false,
+    baseCurrency: "USD",
+    displayCurrency: "USD",
+    exchangeRatesStale: false,
+    exchangeRatesUnavailable: false,
     totalValue: 0,
     totalCost: 0,
     totalGain: 0,
@@ -51,21 +55,21 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ reply });
   } catch (err) {
-    if (err instanceof GeminiError) {
-      return NextResponse.json(
-        {
-          reply: buildFallbackInvestingReply(
-            requestedMessage,
-            requestedPortfolio
-          ),
-          degraded: true,
-        },
-        { status: 200 }
-      );
+    console.error("AI chat error:", err);
+
+    if (requestedMessage) {
+      return NextResponse.json({
+        reply: buildFallbackInvestingReply(
+          requestedMessage,
+          requestedPortfolio
+        ),
+        degraded: true,
+      });
     }
+
     return NextResponse.json(
       { error: getFriendlyAIError() },
-      { status: 500 }
+      { status: 400 }
     );
   }
 }

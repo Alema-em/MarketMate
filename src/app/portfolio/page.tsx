@@ -11,23 +11,29 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { Button } from "@/components/ui/Button";
 import { usePortfolio } from "@/hooks/usePortfolio";
 import { usePortfolioModal } from "@/context/PortfolioModalContext";
-import { formatCurrency, formatPercent } from "@/lib/finance";
+import { useCurrency } from "@/context/CurrencyContext";
+import { formatPercent } from "@/lib/finance";
 
 export default function PortfolioPage() {
   const {
     stocks,
+    holdings,
     summary,
     loading,
     quotesRefreshing,
     error,
+    dataError,
     rateLimited,
     usingFallback,
     refresh,
     lastUpdated,
     isEmpty,
     isDemo,
+    removeHolding,
   } = usePortfolio();
-  const { openAdd } = usePortfolioModal();
+  const { formatUsd, displayCurrency, ratesStale, ratesUnavailable } =
+    useCurrency();
+  const { openAdd, openEdit } = usePortfolioModal();
   const [filter, setFilter] = useState("");
 
   const isPositive = summary.totalGain >= 0;
@@ -43,6 +49,11 @@ export default function PortfolioPage() {
     );
   }, [stocks, filter]);
 
+  const handleDelete = async (id: string) => {
+    if (!window.confirm("Remove this holding from your portfolio?")) return;
+    await removeHolding(id);
+  };
+
   return (
     <AppShell title="Portfolio">
       <span className="space-y-6">
@@ -55,6 +66,9 @@ export default function PortfolioPage() {
             error={error}
             onRefresh={refresh}
             lastUpdated={lastUpdated}
+            displayCurrency={displayCurrency}
+            fxStale={ratesStale}
+            fxUnavailable={ratesUnavailable}
           />
         )}
 
@@ -78,14 +92,14 @@ export default function PortfolioPage() {
               <StatCard
                 label="Total value"
                 value={
-                  statsLoading ? "—" : formatCurrency(summary.totalValue)
+                  statsLoading ? "—" : formatUsd(summary.totalValue)
                 }
                 trend={isPositive ? "gain" : "loss"}
               />
               <StatCard
                 label="Gain / loss"
                 value={
-                  statsLoading ? "—" : formatCurrency(summary.totalGain)
+                  statsLoading ? "—" : formatUsd(summary.totalGain)
                 }
                 subValue={
                   statsLoading
@@ -97,7 +111,7 @@ export default function PortfolioPage() {
               <StatCard
                 label="Cost basis"
                 value={
-                  statsLoading ? "—" : formatCurrency(summary.totalCost)
+                  statsLoading ? "—" : formatUsd(summary.totalCost)
                 }
               />
             </section>
@@ -114,6 +128,10 @@ export default function PortfolioPage() {
 
         {loading && !isEmpty ? (
           <StockListSkeleton count={4} />
+        ) : isEmpty && dataError ? (
+          <p className="rounded-xl border border-loss/30 bg-loss-muted px-4 py-3 text-sm text-loss">
+            {dataError}
+          </p>
         ) : isEmpty ? (
           <EmptyState
             icon={Briefcase}
@@ -129,7 +147,21 @@ export default function PortfolioPage() {
         ) : (
           <section className="grid gap-4">
             {filtered.map((stock) => (
-              <StockCard key={stock.id} stock={stock} />
+              <StockCard
+                key={stock.id}
+                stock={stock}
+                onEdit={
+                  !isDemo
+                    ? () => {
+                        const holding = holdings.find((h) => h.id === stock.id);
+                        if (holding) openEdit(holding);
+                      }
+                    : undefined
+                }
+                onDelete={
+                  !isDemo ? () => void handleDelete(stock.id) : undefined
+                }
+              />
             ))}
             {filtered.length === 0 && (
               <p className="text-center text-sm text-muted py-8">

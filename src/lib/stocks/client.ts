@@ -3,15 +3,17 @@ import type {
   QuotesApiResponse,
   SearchApiResponse,
 } from "@/types/stocks";
+import { getFriendlyQuoteError, getFriendlySearchError } from "@/lib/errors/user-messages";
 
-async function parseJson<T>(res: Response): Promise<T> {
+async function parseJson<T>(
+  res: Response,
+  fallbackMessage: string
+): Promise<T> {
+  const body = await res.json().catch(() => ({}));
   if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new Error(
-      (body as { error?: string }).error ?? `Request failed (${res.status})`
-    );
+    throw new Error(fallbackMessage);
   }
-  return res.json() as Promise<T>;
+  return body as T;
 }
 
 export async function fetchQuotes(
@@ -24,7 +26,8 @@ export async function fetchQuotes(
     symbols: symbols.join(","),
   });
   return parseJson(
-    await fetch(`/api/stocks/quotes?${params}`, { cache: "no-store" })
+    await fetch(`/api/stocks/quotes?${params}`, { cache: "no-store" }),
+    getFriendlyQuoteError()
   );
 }
 
@@ -33,7 +36,8 @@ export async function fetchStockSearch(
 ): Promise<SearchApiResponse> {
   const params = new URLSearchParams({ q: query });
   return parseJson(
-    await fetch(`/api/stocks/search?${params}`, { cache: "no-store" })
+    await fetch(`/api/stocks/search?${params}`, { cache: "no-store" }),
+    getFriendlySearchError()
   );
 }
 
@@ -47,5 +51,5 @@ export async function fetchPortfolioChart(
     body: JSON.stringify({ holdings, currentValue }),
     cache: "no-store",
   });
-  return parseJson(res);
+  return parseJson(res, "Chart data is temporarily unavailable.");
 }

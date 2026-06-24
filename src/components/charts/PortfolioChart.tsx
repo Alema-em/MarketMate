@@ -10,7 +10,7 @@ import {
   YAxis,
 } from "recharts";
 import type { ChartDataPoint } from "@/types";
-import { formatCompactNumber, formatCurrency } from "@/lib/finance";
+import { useCurrency } from "@/context/CurrencyContext";
 
 interface PortfolioChartProps {
   data: ChartDataPoint[];
@@ -21,6 +21,8 @@ export function PortfolioChart({
   data,
   title = "Portfolio performance",
 }: PortfolioChartProps) {
+  const { formatUsd, formatCompactUsd } = useCurrency();
+
   return (
     <section className="glass-card p-5 sm:p-6">
       <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
@@ -69,8 +71,8 @@ export function PortfolioChart({
               axisLine={false}
               tickLine={false}
               tick={{ fill: "#94a3b8", fontSize: 12 }}
-              tickFormatter={(v) => formatCompactNumber(v)}
-              width={48}
+              tickFormatter={(v) => formatCompactUsd(v)}
+              width={56}
             />
             <Tooltip
               contentStyle={{
@@ -80,7 +82,7 @@ export function PortfolioChart({
                 boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
               }}
               labelStyle={{ color: "#94a3b8" }}
-              formatter={(value: number) => [formatCurrency(value), "Value"]}
+              formatter={(value: number) => [formatUsd(value), "Value"]}
             />
             <Area
               type="monotone"

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { fetchStockSearch } from "@/lib/stocks/client";
+import { getFriendlySearchError } from "@/lib/errors/user-messages";
 import type { StockSearchResult } from "@/types/stocks";
 
 const SEARCH_CACHE_KEY = "marketmate_search_v1";
@@ -103,7 +104,8 @@ export function useStockSearch(query: string, debounceMs = 400) {
         if (res.error) setError(res.error);
       } catch (err) {
         setResults([]);
-        setError(err instanceof Error ? err.message : "Search failed");
+        console.error("Stock search error:", err);
+        setError(getFriendlySearchError());
       } finally {
         setLoading(false);
         inFlightSearch.delete(key);

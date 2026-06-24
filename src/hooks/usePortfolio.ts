@@ -54,6 +54,7 @@ export function usePortfolio() {
     loading,
     quotesRefreshing: refreshing,
     error: holdingsError ?? quotesError,
+    dataError: holdingsError,
     rateLimited,
     usingFallback,
     refresh,

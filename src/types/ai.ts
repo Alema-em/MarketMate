@@ -10,6 +10,10 @@ export interface ChatMessage {
 export interface PortfolioContextPayload {
   isEmpty: boolean;
   isDemo: boolean;
+  baseCurrency: "USD";
+  displayCurrency: string;
+  exchangeRatesStale: boolean;
+  exchangeRatesUnavailable: boolean;
   totalValue: number;
   totalCost: number;
   totalGain: number;

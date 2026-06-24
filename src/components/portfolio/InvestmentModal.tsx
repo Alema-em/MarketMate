@@ -11,6 +11,7 @@ import {
   validateHoldingInput,
   type HoldingFormErrors,
 } from "@/lib/validation/holding";
+import { getFriendlySaveError } from "@/lib/errors/user-messages";
 import type { PortfolioHoldingInput } from "@/types/stocks";
 
 const emptyForm: PortfolioHoldingInput = {
@@ -50,6 +51,15 @@ export function InvestmentModal() {
 
   if (!isOpen) return null;
 
+  const updateSymbol = (value: string) => {
+    setForm((f) => ({
+      ...f,
+      symbol: value.trim().toUpperCase(),
+      name: "",
+    }));
+    setErrors((prev) => ({ ...prev, symbol: undefined }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const validation = validateHoldingInput(form);
@@ -64,9 +74,7 @@ export function InvestmentModal() {
       }
       close();
     } catch (err) {
-      setSubmitError(
-        err instanceof Error ? err.message : "Failed to save investment"
-      );
+      setSubmitError(getFriendlySaveError(err));
     }
   };
 
@@ -123,10 +131,13 @@ export function InvestmentModal() {
               <span className="mt-1.5 block">
                 <StockSearch
                   placeholder="Search symbol (e.g. AAPL)…"
+                  value={form.symbol}
+                  onQueryChange={updateSymbol}
+                  clearOnSelect={false}
                   onSelect={(r) =>
                     setForm((f) => ({
                       ...f,
-                      symbol: r.symbol,
+                      symbol: r.symbol.toUpperCase(),
                       name: r.name,
                     }))
                   }

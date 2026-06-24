@@ -18,6 +18,7 @@ import {
   timestampToIso,
   updateHolding,
 } from "@/lib/firestore/portfolio";
+import { getFriendlyFirestoreError } from "@/lib/errors/user-messages";
 import type { PortfolioHolding, PortfolioHoldingInput } from "@/types/stocks";
 
 const DEMO_READ_ONLY_MSG =
@@ -73,7 +74,8 @@ export function usePortfolioHoldings() {
         setLoading(false);
       },
       (err) => {
-        setError(err.message);
+        console.error("Portfolio snapshot error:", err);
+        setError(getFriendlyFirestoreError());
         setLoading(false);
       }
     );

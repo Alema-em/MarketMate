@@ -15,6 +15,7 @@ import {
   type User,
 } from "firebase/auth";
 import { getFirebaseAuth, isFirebaseConfigured } from "@/lib/firebase";
+import { clearUserSession } from "@/lib/session/clear-user-session";
 
 interface AuthContextValue {
   user: User | null;
@@ -59,6 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     const auth = getFirebaseAuth();
+    clearUserSession();
     if (!auth) return;
     await firebaseSignOut(auth);
   };

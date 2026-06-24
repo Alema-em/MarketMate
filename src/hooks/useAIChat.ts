@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { sendChatMessage } from "@/lib/ai/client";
+import { useCurrency } from "@/context/CurrencyContext";
 import { buildPortfolioContext } from "@/lib/ai/portfolio-context";
 import {
   clearChatHistory,
@@ -41,9 +42,31 @@ export function useAIChat({
     if (hydrated) saveChatHistory(messages);
   }, [messages, hydrated]);
 
+  const {
+    displayCurrency,
+    convertUsd,
+    ratesStale,
+    ratesUnavailable,
+  } = useCurrency();
+
   const portfolioContext = useMemo(
-    () => buildPortfolioContext(stocks, summary, isEmpty, isDemo),
-    [stocks, summary, isEmpty, isDemo]
+    () =>
+      buildPortfolioContext(stocks, summary, isEmpty, isDemo, {
+        displayCurrency,
+        convertUsd,
+        ratesStale,
+        ratesUnavailable,
+      }),
+    [
+      stocks,
+      summary,
+      isEmpty,
+      isDemo,
+      displayCurrency,
+      convertUsd,
+      ratesStale,
+      ratesUnavailable,
+    ]
   );
 
   const send = useCallback(

@@ -9,6 +9,9 @@ interface MarketDataBannerProps {
   error?: string | null;
   onRefresh?: () => void;
   lastUpdated?: number | null;
+  displayCurrency?: string;
+  fxStale?: boolean;
+  fxUnavailable?: boolean;
 }
 
 export function MarketDataBanner({
@@ -19,8 +22,23 @@ export function MarketDataBanner({
   error,
   onRefresh,
   lastUpdated,
+  displayCurrency,
+  fxStale,
+  fxUnavailable,
 }: MarketDataBannerProps) {
-  if (!loading && !refreshing && !rateLimited && !usingFallback && !error)
+  const showFxNote =
+    displayCurrency &&
+    displayCurrency !== "USD" &&
+    (fxStale || fxUnavailable);
+
+  if (
+    !loading &&
+    !refreshing &&
+    !rateLimited &&
+    !usingFallback &&
+    !error &&
+    !showFxNote
+  )
     return null;
 
   return (
@@ -28,7 +46,7 @@ export function MarketDataBanner({
       className={`flex flex-wrap items-center justify-between gap-3 rounded-xl border px-4 py-3 text-sm ${
         error
           ? "border-loss/30 bg-loss-muted text-loss"
-          : rateLimited || usingFallback
+          : rateLimited || usingFallback || showFxNote
             ? "border-amber-500/30 bg-amber-500/10 text-amber-100"
             : "border-border bg-surface/60 text-muted"
       }`}
@@ -39,7 +57,7 @@ export function MarketDataBanner({
           <RefreshCw className="h-4 w-4 animate-spin shrink-0" />
         ) : error ? (
           <WifiOff className="h-4 w-4 shrink-0" />
-        ) : rateLimited || usingFallback ? (
+        ) : rateLimited || usingFallback || showFxNote ? (
           <AlertTriangle className="h-4 w-4 shrink-0" />
         ) : (
           <Wifi className="h-4 w-4 shrink-0 text-gain" />
@@ -58,8 +76,13 @@ export function MarketDataBanner({
             !error &&
             !rateLimited &&
             !usingFallback &&
+            !showFxNote &&
             lastUpdated &&
             `Prices updated ${formatRelative(lastUpdated)}`}
+          {showFxNote &&
+            (fxUnavailable
+              ? `Showing USD — ${displayCurrency} exchange rates unavailable.`
+              : `Values shown in ${displayCurrency} using cached exchange rates.`)}
         </span>
       </span>
       {onRefresh && !loading && !refreshing && (

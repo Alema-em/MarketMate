@@ -3,6 +3,7 @@ import {
   AlphaVantageError,
   fetchSymbolSearch,
 } from "@/lib/stocks/alpha-vantage";
+import { getFriendlySearchError } from "@/lib/errors/user-messages";
 
 export async function GET(request: NextRequest) {
   try {
@@ -20,13 +21,11 @@ export async function GET(request: NextRequest) {
   } catch (err) {
     const rateLimited =
       err instanceof AlphaVantageError && err.rateLimited;
-    return NextResponse.json(
-      {
-        results: [],
-        rateLimited,
-        error: err instanceof Error ? err.message : "Search failed",
-      },
-      { status: rateLimited ? 429 : 500 }
-    );
+    console.error("Search API error:", err);
+    return NextResponse.json({
+      results: [],
+      rateLimited,
+      error: getFriendlySearchError(),
+    });
   }
 }

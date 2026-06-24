@@ -14,6 +14,8 @@ import {
   Menu,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { CurrencySelector } from "@/components/settings/CurrencySelector";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const navItems = [
@@ -31,7 +33,14 @@ interface SidebarProps {
 
 export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const { user, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    onMobileClose?.();
+    await signOut();
+    router.replace("/login");
+  };
 
   const NavContent = () => (
     <>
@@ -68,6 +77,7 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
       </nav>
 
       <div className="mt-auto border-t border-border pt-4">
+        <CurrencySelector />
         {user && (
           <div className="mb-3 flex items-center gap-3 rounded-xl bg-surface-elevated/50 px-3 py-2.5">
             {user.photoURL ? (
@@ -92,7 +102,7 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
         )}
         <button
           type="button"
-          onClick={() => signOut()}
+          onClick={() => void handleSignOut()}
           className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted transition-colors hover:bg-loss-muted hover:text-loss"
         >
           <LogOut className="h-5 w-5" />

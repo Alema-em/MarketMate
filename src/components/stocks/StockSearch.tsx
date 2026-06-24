@@ -8,23 +8,37 @@ import type { StockSearchResult } from "@/types/stocks";
 interface StockSearchProps {
   placeholder?: string;
   onSelect: (result: StockSearchResult) => void;
+  value?: string;
+  onQueryChange?: (value: string) => void;
+  clearOnSelect?: boolean;
   className?: string;
 }
 
 export function StockSearch({
-  placeholder = "Search stocks by symbol or name…",
+  placeholder = "Search stocks by symbol or name...",
   onSelect,
+  value,
+  onQueryChange,
+  clearOnSelect = true,
   className = "",
 }: StockSearchProps) {
-  const [query, setQuery] = useState("");
+  const [internalQuery, setInternalQuery] = useState("");
   const [open, setOpen] = useState(false);
+  const query = value ?? internalQuery;
   const { results, loading, error, rateLimited } = useStockSearch(query);
 
   const showDropdown = open && query.trim().length > 0;
 
+  const setQuery = (next: string) => {
+    if (value === undefined) {
+      setInternalQuery(next);
+    }
+    onQueryChange?.(next);
+  };
+
   return (
     <span className={`relative block ${className}`}>
-      <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted pointer-events-none" />
+      <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
       <input
         type="search"
         value={query}
@@ -47,12 +61,10 @@ export function StockSearch({
           className="absolute z-50 mt-2 max-h-64 w-full overflow-auto rounded-xl border border-border bg-surface shadow-xl scrollbar-thin"
           role="listbox"
         >
-          {error && (
-            <li className="px-4 py-3 text-sm text-loss">{error}</li>
-          )}
+          {error && <li className="px-4 py-3 text-sm text-loss">{error}</li>}
           {rateLimited && !error && (
             <li className="px-4 py-3 text-sm text-amber-200">
-              Search rate limited — try again shortly.
+              Search rate limited - try again shortly.
             </li>
           )}
           {!loading && !error && results.length === 0 && (
@@ -67,8 +79,8 @@ export function StockSearch({
                 className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm transition-colors hover:bg-white/5"
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => {
+                  setQuery(clearOnSelect ? "" : result.symbol);
                   onSelect(result);
-                  setQuery("");
                   setOpen(false);
                 }}
               >

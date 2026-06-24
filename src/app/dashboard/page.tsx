@@ -14,7 +14,8 @@ import { Button } from "@/components/ui/Button";
 import { usePortfolio } from "@/hooks/usePortfolio";
 import { usePortfolioChart } from "@/hooks/usePortfolioChart";
 import { usePortfolioModal } from "@/context/PortfolioModalContext";
-import { formatCurrency, formatPercent } from "@/lib/finance";
+import { useCurrency } from "@/context/CurrencyContext";
+import { formatPercent } from "@/lib/finance";
 
 export default function DashboardPage() {
   const {
@@ -31,6 +32,8 @@ export default function DashboardPage() {
     isEmpty,
     isDemo,
   } = usePortfolio();
+  const { formatUsd, displayCurrency, ratesStale, ratesUnavailable } =
+    useCurrency();
   const { openAdd } = usePortfolioModal();
   const { data: chartData, loading: chartLoading, isEmpty: chartEmpty } =
     usePortfolioChart(holdings, summary.totalValue, !loading && !isEmpty);
@@ -50,13 +53,16 @@ export default function DashboardPage() {
             error={error}
             onRefresh={refresh}
             lastUpdated={lastUpdated}
+            displayCurrency={displayCurrency}
+            fxStale={ratesStale}
+            fxUnavailable={ratesUnavailable}
           />
         )}
 
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <StatCard
             label="Portfolio value"
-            value={statsLoading ? "—" : formatCurrency(summary.totalValue)}
+            value={statsLoading ? "—" : formatUsd(summary.totalValue)}
             subValue={
               isEmpty
                 ? "Add investments to begin"
@@ -69,7 +75,7 @@ export default function DashboardPage() {
           />
           <StatCard
             label="Total gain / loss"
-            value={statsLoading ? "—" : formatCurrency(summary.totalGain)}
+            value={statsLoading ? "—" : formatUsd(summary.totalGain)}
             subValue={
               isEmpty
                 ? undefined
@@ -82,7 +88,7 @@ export default function DashboardPage() {
           />
           <StatCard
             label="Total invested"
-            value={statsLoading ? "—" : formatCurrency(summary.totalCost)}
+            value={statsLoading ? "—" : formatUsd(summary.totalCost)}
             icon={DollarSign}
           />
           <StatCard

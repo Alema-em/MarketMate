@@ -21,6 +21,7 @@ import {
   setInFlight,
   writeQuoteCache,
 } from "@/lib/stocks/quote-cache";
+import { getFriendlyQuoteError } from "@/lib/errors/user-messages";
 import type { StockQuote } from "@/types/stocks";
 
 interface QuotesContextValue {
@@ -134,7 +135,8 @@ export function QuotesProvider({ children }: { children: ReactNode }) {
       } catch (err) {
         if (!mountedRef.current) return;
         if (cached) setQuotes(cached);
-        setError(err instanceof Error ? err.message : "Failed to load quotes");
+        console.error("Quote fetch error:", err);
+        setError(getFriendlyQuoteError());
       } finally {
         if (mountedRef.current) {
           setLoading(false);

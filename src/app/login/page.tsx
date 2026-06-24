@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { TrendingUp, ChartColumn, Shield, Zap, ChartLine } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/Button";
+import { getFriendlyAuthError } from "@/lib/errors/user-messages";
 
 export default function LoginPage() {
   const { user, loading, signInWithGoogle, firebaseReady } = useAuth();
@@ -24,9 +25,7 @@ export default function LoginPage() {
     try {
       await signInWithGoogle();
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to sign in. Please try again."
-      );
+      setError(getFriendlyAuthError(err));
     } finally {
       setSigningIn(false);
     }

@@ -1,6 +1,9 @@
+"use client";
+
 import { Star, TrendingDown, TrendingUp, X } from "lucide-react";
 import type { WatchlistItem } from "@/types";
-import { formatCurrency, formatPercent } from "@/lib/finance";
+import { useCurrency } from "@/context/CurrencyContext";
+import { formatPercent } from "@/lib/finance";
 
 interface WatchlistCardProps {
   item: WatchlistItem;
@@ -8,6 +11,7 @@ interface WatchlistCardProps {
 }
 
 export function WatchlistCard({ item, onRemove }: WatchlistCardProps) {
+  const { formatUsd } = useCurrency();
   const isPositive = item.changePercent >= 0;
 
   return (
@@ -24,7 +28,7 @@ export function WatchlistCard({ item, onRemove }: WatchlistCardProps) {
 
       <span className="flex items-center gap-4 shrink-0">
         <span className="text-right">
-          <p className="font-semibold">{formatCurrency(item.currentPrice)}</p>
+          <p className="font-semibold">{formatUsd(item.currentPrice)}</p>
           <p
             className={`flex items-center justify-end gap-1 text-sm font-medium ${
               isPositive ? "text-gain" : "text-loss"
