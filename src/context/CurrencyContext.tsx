@@ -37,6 +37,14 @@ interface CurrencyContextValue {
   ratesLoading: boolean;
   ratesStale: boolean;
   ratesUnavailable: boolean;
+  /** Convert any supported market currency into display currency. */
+  convertAmount: (amount: number, from: DisplayCurrency) => number | null;
+  /** Format amount that is already in display currency. */
+  formatDisplay: (amount: number) => string;
+  formatCompactDisplay: (amount: number) => string;
+  /** Convert from market currency then format for display. */
+  formatAmount: (amount: number, from?: DisplayCurrency) => string;
+  /** @deprecated Prefer formatAmount — assumes USD input. */
   convertUsd: (usd: number) => number | null;
   formatUsd: (usd: number) => string;
   formatCompactUsd: (usd: number) => string;
@@ -44,10 +52,6 @@ interface CurrencyContextValue {
 }
 
 const CurrencyContext = createContext<CurrencyContextValue | null>(null);
-
-function applyRate(usd: number, rate: number): number {
-  return usd * rate;
-}
 
 export function CurrencyProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
@@ -122,14 +126,30 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
     return () => clearInterval(interval);
   }, [loadRates]);
 
-  const activeRate = useMemo(() => {
-    if (displayCurrency === DEFAULT_DISPLAY_CURRENCY) return 1;
-    const rate = rates[displayCurrency];
-    return typeof rate === "number" && rate > 0 ? rate : null;
-  }, [displayCurrency, rates]);
+  const rateUsdTo = useCallback(
+    (currency: DisplayCurrency): number | null => {
+      if (currency === "USD") return 1;
+      const rate = rates[currency];
+      return typeof rate === "number" && rate > 0 ? rate : null;
+    },
+    [rates]
+  );
 
-  const canConvert =
-    displayCurrency === DEFAULT_DISPLAY_CURRENCY || activeRate !== null;
+  const convertAmount = useCallback(
+    (amount: number, from: DisplayCurrency): number | null => {
+      if (from === displayCurrency) return amount;
+      const fromRate = rateUsdTo(from);
+      const toRate = rateUsdTo(displayCurrency);
+      if (fromRate === null || toRate === null) return null;
+      const usd = amount / fromRate;
+      return usd * toRate;
+    },
+    [displayCurrency, rateUsdTo]
+  );
+
+  const canConvert = useMemo(() => {
+    return rateUsdTo(displayCurrency) !== null;
+  }, [displayCurrency, rateUsdTo]);
 
   const setDisplayCurrency = useCallback(
     (currency: DisplayCurrency) => {
@@ -144,41 +164,46 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
     [uid, isDemo]
   );
 
-  const convertUsd = useCallback(
-    (usd: number): number | null => {
-      if (displayCurrency === DEFAULT_DISPLAY_CURRENCY) return usd;
-      if (activeRate === null) return null;
-      return applyRate(usd, activeRate);
-    },
-    [displayCurrency, activeRate]
+  const formatDisplay = useCallback(
+    (amount: number) => formatMoney(amount, displayCurrency),
+    [displayCurrency]
   );
 
-  const formatUsd = useCallback(
-    (usd: number): string => {
-      if (displayCurrency === DEFAULT_DISPLAY_CURRENCY) {
-        return formatMoney(usd, DEFAULT_DISPLAY_CURRENCY);
-      }
-      const converted = convertUsd(usd);
+  const formatCompactDisplay = useCallback(
+    (amount: number) => formatCompactMoney(amount, displayCurrency),
+    [displayCurrency]
+  );
+
+  const formatAmount = useCallback(
+    (amount: number, from: DisplayCurrency = "USD") => {
+      const converted = convertAmount(amount, from);
       if (converted === null) {
-        return formatMoney(usd, DEFAULT_DISPLAY_CURRENCY);
+        return formatMoney(amount, from);
       }
       return formatMoney(converted, displayCurrency);
     },
-    [displayCurrency, convertUsd]
+    [convertAmount, displayCurrency]
+  );
+
+  const convertUsd = useCallback(
+    (usd: number) => convertAmount(usd, "USD"),
+    [convertAmount]
+  );
+
+  const formatUsd = useCallback(
+    (usd: number) => formatAmount(usd, "USD"),
+    [formatAmount]
   );
 
   const formatCompactUsd = useCallback(
-    (usd: number): string => {
-      if (displayCurrency === DEFAULT_DISPLAY_CURRENCY) {
-        return formatCompactMoney(usd, DEFAULT_DISPLAY_CURRENCY);
-      }
-      const converted = convertUsd(usd);
+    (usd: number) => {
+      const converted = convertAmount(usd, "USD");
       if (converted === null) {
-        return formatCompactMoney(usd, DEFAULT_DISPLAY_CURRENCY);
+        return formatCompactMoney(usd, "USD");
       }
       return formatCompactMoney(converted, displayCurrency);
     },
-    [displayCurrency, convertUsd]
+    [convertAmount, displayCurrency]
   );
 
   const value = useMemo(
@@ -188,8 +213,11 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
       ratesLoading,
       ratesStale,
       ratesUnavailable:
-        ratesUnavailable ||
-        (displayCurrency !== DEFAULT_DISPLAY_CURRENCY && activeRate === null),
+        ratesUnavailable || rateUsdTo(displayCurrency) === null,
+      convertAmount,
+      formatDisplay,
+      formatCompactDisplay,
+      formatAmount,
       convertUsd,
       formatUsd,
       formatCompactUsd,
@@ -201,7 +229,11 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
       ratesLoading,
       ratesStale,
       ratesUnavailable,
-      activeRate,
+      rateUsdTo,
+      convertAmount,
+      formatDisplay,
+      formatCompactDisplay,
+      formatAmount,
       convertUsd,
       formatUsd,
       formatCompactUsd,

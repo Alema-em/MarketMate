@@ -1,7 +1,8 @@
 import type { ChartDataPoint } from "@/types";
 import type { StockQuote } from "@/types/stocks";
+import { inferQuoteCurrency } from "@/lib/stocks/market-currency";
 
-/** Realistic snapshot used when Alpha Vantage rate limit is hit or API is down. */
+/** Realistic snapshot used when live quotes are unavailable. */
 export const FALLBACK_QUOTES: Record<string, StockQuote> = {
   AAPL: {
     symbol: "AAPL",
@@ -11,6 +12,57 @@ export const FALLBACK_QUOTES: Record<string, StockQuote> = {
     changePercent: 1.19,
     lastUpdated: "fallback",
     fromFallback: true,
+    currency: "USD",
+  },
+  "RELIANCE.NS": {
+    symbol: "RELIANCE.NS",
+    name: "Reliance Industries Ltd",
+    price: 2850,
+    change: 12.5,
+    changePercent: 0.44,
+    lastUpdated: "fallback",
+    fromFallback: true,
+    currency: "INR",
+  },
+  "TCS.NS": {
+    symbol: "TCS.NS",
+    name: "Tata Consultancy Services",
+    price: 3920,
+    change: -18.2,
+    changePercent: -0.46,
+    lastUpdated: "fallback",
+    fromFallback: true,
+    currency: "INR",
+  },
+  "INFY.NS": {
+    symbol: "INFY.NS",
+    name: "Infosys Ltd",
+    price: 1685,
+    change: 8.1,
+    changePercent: 0.48,
+    lastUpdated: "fallback",
+    fromFallback: true,
+    currency: "INR",
+  },
+  "HDFCBANK.NS": {
+    symbol: "HDFCBANK.NS",
+    name: "HDFC Bank Ltd",
+    price: 1720,
+    change: 5.4,
+    changePercent: 0.31,
+    lastUpdated: "fallback",
+    fromFallback: true,
+    currency: "INR",
+  },
+  "ITC.NS": {
+    symbol: "ITC.NS",
+    name: "ITC Ltd",
+    price: 455,
+    change: -2.1,
+    changePercent: -0.46,
+    lastUpdated: "fallback",
+    fromFallback: true,
+    currency: "INR",
   },
   NVDA: {
     symbol: "NVDA",
@@ -20,6 +72,7 @@ export const FALLBACK_QUOTES: Record<string, StockQuote> = {
     changePercent: 1.68,
     lastUpdated: "fallback",
     fromFallback: true,
+    currency: "USD",
   },
   MSFT: {
     symbol: "MSFT",
@@ -29,6 +82,7 @@ export const FALLBACK_QUOTES: Record<string, StockQuote> = {
     changePercent: -0.3,
     lastUpdated: "fallback",
     fromFallback: true,
+    currency: "USD",
   },
   GOOGL: {
     symbol: "GOOGL",
@@ -38,6 +92,7 @@ export const FALLBACK_QUOTES: Record<string, StockQuote> = {
     changePercent: 0.63,
     lastUpdated: "fallback",
     fromFallback: true,
+    currency: "USD",
   },
   TSLA: {
     symbol: "TSLA",
@@ -47,6 +102,7 @@ export const FALLBACK_QUOTES: Record<string, StockQuote> = {
     changePercent: 2.34,
     lastUpdated: "fallback",
     fromFallback: true,
+    currency: "USD",
   },
   AMZN: {
     symbol: "AMZN",
@@ -56,6 +112,7 @@ export const FALLBACK_QUOTES: Record<string, StockQuote> = {
     changePercent: -0.87,
     lastUpdated: "fallback",
     fromFallback: true,
+    currency: "USD",
   },
   META: {
     symbol: "META",
@@ -65,6 +122,7 @@ export const FALLBACK_QUOTES: Record<string, StockQuote> = {
     changePercent: 1.56,
     lastUpdated: "fallback",
     fromFallback: true,
+    currency: "USD",
   },
   AMD: {
     symbol: "AMD",
@@ -74,6 +132,7 @@ export const FALLBACK_QUOTES: Record<string, StockQuote> = {
     changePercent: -1.22,
     lastUpdated: "fallback",
     fromFallback: true,
+    currency: "USD",
   },
   SPY: {
     symbol: "SPY",
@@ -83,6 +142,7 @@ export const FALLBACK_QUOTES: Record<string, StockQuote> = {
     changePercent: 0.36,
     lastUpdated: "fallback",
     fromFallback: true,
+    currency: "USD",
   },
   QQQ: {
     symbol: "QQQ",
@@ -92,6 +152,7 @@ export const FALLBACK_QUOTES: Record<string, StockQuote> = {
     changePercent: 0.7,
     lastUpdated: "fallback",
     fromFallback: true,
+    currency: "USD",
   },
   VTI: {
     symbol: "VTI",
@@ -101,6 +162,7 @@ export const FALLBACK_QUOTES: Record<string, StockQuote> = {
     changePercent: 0.34,
     lastUpdated: "fallback",
     fromFallback: true,
+    currency: "USD",
   },
   GBTC: {
     symbol: "GBTC",
@@ -110,6 +172,7 @@ export const FALLBACK_QUOTES: Record<string, StockQuote> = {
     changePercent: 2.36,
     lastUpdated: "fallback",
     fromFallback: true,
+    currency: "USD",
   },
   COIN: {
     symbol: "COIN",
@@ -119,6 +182,7 @@ export const FALLBACK_QUOTES: Record<string, StockQuote> = {
     changePercent: -1.14,
     lastUpdated: "fallback",
     fromFallback: true,
+    currency: "USD",
   },
   ARKK: {
     symbol: "ARKK",
@@ -128,6 +192,7 @@ export const FALLBACK_QUOTES: Record<string, StockQuote> = {
     changePercent: 1.71,
     lastUpdated: "fallback",
     fromFallback: true,
+    currency: "USD",
   },
   HOOD: {
     symbol: "HOOD",
@@ -137,6 +202,7 @@ export const FALLBACK_QUOTES: Record<string, StockQuote> = {
     changePercent: 1.77,
     lastUpdated: "fallback",
     fromFallback: true,
+    currency: "USD",
   },
   MARA: {
     symbol: "MARA",
@@ -146,6 +212,7 @@ export const FALLBACK_QUOTES: Record<string, StockQuote> = {
     changePercent: -2.83,
     lastUpdated: "fallback",
     fromFallback: true,
+    currency: "USD",
   },
 };
 
@@ -166,16 +233,23 @@ export const FALLBACK_CHART_DATA: ChartDataPoint[] = [
 
 export function getFallbackQuote(symbol: string): StockQuote {
   const upper = symbol.toUpperCase();
-  if (FALLBACK_QUOTES[upper]) return FALLBACK_QUOTES[upper];
+  const known = FALLBACK_QUOTES[upper];
+  if (known) {
+    return {
+      ...known,
+      currency: known.currency ?? inferQuoteCurrency(upper),
+    };
+  }
 
   return {
     symbol: upper,
     name: upper,
-    price: 100,
+    price: upper.endsWith(".NS") || upper.endsWith(".BO") ? 1000 : 100,
     change: 0,
     changePercent: 0,
     lastUpdated: "fallback",
     fromFallback: true,
+    currency: inferQuoteCurrency(upper),
   };
 }
 

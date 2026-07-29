@@ -12,6 +12,10 @@ import {
   type HoldingFormErrors,
 } from "@/lib/validation/holding";
 import { getFriendlySaveError } from "@/lib/errors/user-messages";
+import {
+  currencyLabelForSymbol,
+  isIndianSymbol,
+} from "@/lib/stocks/market-currency";
 import type { PortfolioHoldingInput } from "@/types/stocks";
 
 const emptyForm: PortfolioHoldingInput = {
@@ -50,6 +54,9 @@ export function InvestmentModal() {
   }, [isOpen, editing]);
 
   if (!isOpen) return null;
+
+  const priceCurrencyLabel = currencyLabelForSymbol(form.symbol || "");
+  const indiaHint = isIndianSymbol(form.symbol);
 
   const updateSymbol = (value: string) => {
     setForm((f) => ({
@@ -130,7 +137,7 @@ export function InvestmentModal() {
             ) : (
               <span className="mt-1.5 block">
                 <StockSearch
-                  placeholder="Search symbol (e.g. AAPL)…"
+                  placeholder="Search NSE stock (e.g. Reliance, TCS)…"
                   value={form.symbol}
                   onQueryChange={updateSymbol}
                   clearOnSelect={false}
@@ -184,7 +191,7 @@ export function InvestmentModal() {
 
           <label className="block">
             <span className="text-sm font-medium text-muted">
-              Average buy price (USD)
+              Average buy price ({priceCurrencyLabel})
             </span>
             <input
               type="number"
@@ -198,8 +205,13 @@ export function InvestmentModal() {
                 }))
               }
               className="mt-1.5 w-full rounded-xl border border-border bg-surface-elevated/50 px-4 py-2.5 text-sm focus:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent/20"
-              placeholder="e.g. 178.50"
+              placeholder={indiaHint ? "e.g. 2850.00" : "e.g. 178.50"}
             />
+            <span className="mt-1 block text-xs text-muted">
+              {indiaHint
+                ? "Use NSE/BSE Yahoo symbols like RELIANCE.NS or TCS.NS. Enter cost in ₹."
+                : "US tickers use USD. For Indian stocks, search and pick a .NS / .BO symbol."}
+            </span>
             {errors.avgCost && (
               <span className="mt-1 block text-xs text-loss">{errors.avgCost}</span>
             )}

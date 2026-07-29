@@ -9,6 +9,7 @@ import {
   TrendingUp,
   Sparkles,
   Bot,
+  GraduationCap,
   LogOut,
   X,
   Menu,
@@ -20,6 +21,7 @@ import { useState } from "react";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/learn", label: "Learn", icon: GraduationCap },
   { href: "/copilot", label: "AI Copilot", icon: Bot },
   { href: "/portfolio", label: "Portfolio", icon: Briefcase },
   { href: "/watchlist", label: "Watchlist", icon: Star },

@@ -17,6 +17,7 @@ interface AIAssistantProps {
   isDemo: boolean;
   onAddInvestment?: () => void;
   compact?: boolean;
+  initialPrompt?: string;
 }
 
 export function AIAssistant({
@@ -26,6 +27,7 @@ export function AIAssistant({
   isDemo,
   onAddInvestment,
   compact = false,
+  initialPrompt,
 }: AIAssistantProps) {
   const { messages, loading, error, hydrated, send, clear } = useAIChat({
     stocks,
@@ -36,6 +38,13 @@ export function AIAssistant({
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (initialPrompt?.trim()) {
+      setInput(initialPrompt.trim());
+      inputRef.current?.focus();
+    }
+  }, [initialPrompt]);
 
   useEffect(() => {
     const el = scrollRef.current;

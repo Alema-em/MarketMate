@@ -31,7 +31,7 @@ export default function PortfolioPage() {
     isDemo,
     removeHolding,
   } = usePortfolio();
-  const { formatUsd, displayCurrency, ratesStale, ratesUnavailable } =
+  const { formatDisplay, displayCurrency, ratesStale, ratesUnavailable } =
     useCurrency();
   const { openAdd, openEdit } = usePortfolioModal();
   const [filter, setFilter] = useState("");
@@ -76,7 +76,7 @@ export default function PortfolioPage() {
           <p className="text-sm text-muted max-w-lg">
             {isDemo
               ? "Sample positions for presentations — diversified across stocks, ETFs, and crypto exposure."
-              : "Your holdings are saved to Firestore. Prices refresh every 5 minutes or on demand."}
+              : "Track NSE/BSE holdings with .NS/.BO symbols. Enter buy prices in ₹, then set display currency to INR."}
           </p>
           {!isDemo && (
             <Button onClick={openAdd} className="shrink-0">
@@ -92,14 +92,14 @@ export default function PortfolioPage() {
               <StatCard
                 label="Total value"
                 value={
-                  statsLoading ? "—" : formatUsd(summary.totalValue)
+                  statsLoading ? "—" : formatDisplay(summary.totalValue)
                 }
                 trend={isPositive ? "gain" : "loss"}
               />
               <StatCard
                 label="Gain / loss"
                 value={
-                  statsLoading ? "—" : formatUsd(summary.totalGain)
+                  statsLoading ? "—" : formatDisplay(summary.totalGain)
                 }
                 subValue={
                   statsLoading
@@ -111,7 +111,7 @@ export default function PortfolioPage() {
               <StatCard
                 label="Cost basis"
                 value={
-                  statsLoading ? "—" : formatUsd(summary.totalCost)
+                  statsLoading ? "—" : formatDisplay(summary.totalCost)
                 }
               />
             </section>
@@ -136,7 +136,7 @@ export default function PortfolioPage() {
           <EmptyState
             icon={Briefcase}
             title="Your portfolio is empty"
-            description="Record your investments with ticker, quantity, average price, and purchase date. We'll calculate live profit and loss automatically."
+            description="Search Indian stocks like Reliance or TCS, pick the .NS listing, and enter your average buy price in rupees. Live P/L updates automatically."
             action={
               <Button size="lg" onClick={openAdd}>
                 <Plus className="h-5 w-5" />

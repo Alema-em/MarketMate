@@ -119,6 +119,29 @@ User-selectable display currency (USD default; AED, INR, GBP, EUR). Holdings and
 - **Local fallback:** `localStorage` per user + global key before Firestore loads.
 - **Demo accounts:** Currency changes apply locally only; no Firestore writes.
 - **FX source:** [open.er-api.com](https://open.er-api.com) (primary, includes AED) with [Frankfurter](https://www.frankfurter.app/) fallback. Server cache 1h fresh; stale cache up to 24h; client `localStorage` backup.
+
+---
+
+## India / NSE market data (July 2026)
+
+### Summary
+Live quotes, search, and chart history now use **Yahoo Finance** (free, no API key). Indian tickers use Yahoo suffixes: `RELIANCE.NS`, `TCS.NS`, `HDFCBANK.BO`. Quote currency is **INR** for `.NS`/`.BO` and **USD** for typical US symbols. Display currency (e.g. INR) converts correctly from each holding’s market currency.
+
+### Dad setup (India)
+1. Sign in with his Google account (not demo email).
+2. Sidebar → Display currency → **INR**.
+3. Add holdings via search (prefer `.NS` results) and enter **avg cost in ₹**.
+4. Use AI Copilot for educational insights.
+
+### APIs for personal India use
+| Need | Provider | Cost |
+|------|----------|------|
+| NSE/BSE + US prices | Yahoo Finance (wired) | Free |
+| INR FX | open.er-api | Free |
+| AI insights | Gemini Flash | Free tier |
+
+Alpha Vantage free (25 req/day) is **not** suitable for daily multi-holding use. Optional paid: Twelve Data / Finnhub if Yahoo is blocked in your host region.
+
 - **Unavailable rates:** Falls back to USD formatting with amber warnings in sidebar + `MarketDataBanner` (never pretends live FX).
 - **AI context:** Portfolio amounts sent to Gemini in display currency with `baseCurrency`, `exchangeRatesStale`, `exchangeRatesUnavailable` metadata.
 
@@ -145,4 +168,61 @@ User-selectable display currency (USD default; AED, INR, GBP, EUR). Holdings and
 - [ ] Mobile sidebar: currency selector usable in drawer.
 - [ ] AI Copilot: ask "what is my portfolio value?" — reply references display currency.
 - [ ] Investment modal still labels avg cost as USD; stored values unchanged.
+
+---
+
+## Beginner Mode v1 — Learn (June 2025)
+
+### Summary
+Separate **Learn** area with the **First Investor** path (7 lessons), onboarding for experience/goal, XP + progress bar, quizzes, Copilot deep-links, and a **Practice Portfolio** sandbox (unlocks after Diversification). Does not modify portfolio/watchlist schemas.
+
+### Firestore schema (new)
+```
+users/{uid}/learningProfile/app
+  experienceLevel: "brand_new" | "some_knowledge" | "experienced"
+  learningGoal: "learn_basics" | "mock_portfolio" | "track_investments"
+  onboardingCompleted: boolean
+  activePathId: "first-investor"
+  updatedAt
+
+users/{uid}/lessonProgress/{lessonId}
+  lessonId, pathId, completed, quizPassed, xpEarned, completedAt, updatedAt
+```
+
+### Routes
+- `/learn` — path hub + onboarding when profile missing
+- `/learn/lesson/[id]` — lesson reader + quiz
+- `/learn/practice` — practice sandbox (after lesson `diversification`)
+- `/copilot?prompt=...` — prefills AI input (does not auto-send)
+
+### Demo
+- Seeded profile + 3 completed lessons (`src/lib/demo/learning-seed-data.ts`)
+- No Firestore writes from `useLearning` when `isDemo`
+
+### Known limitations (v1)
+- Practice Portfolio is a placeholder exercise, not interactive holdings
+- No streaks, leaderboards, payments, or broker integrations
+- Lesson content is static TS (no Gemini required)
+- Single path only (`first-investor`)
+
+### Files added/changed
+- `src/types/learning.ts`
+- `src/lib/learning/*`, `src/lib/demo/learning-seed-data.ts`
+- `src/lib/firestore/learning.ts`
+- `src/hooks/useLearning.ts`
+- `src/components/learn/*`
+- `src/app/learn/**`, `src/app/copilot/page.tsx`, `src/components/ai/AIAssistant.tsx`
+- `src/components/layout/Sidebar.tsx`
+- `src/lib/session/clear-user-session.ts`
+
+### Manual tests
+- [ ] New user: `/learn` shows onboarding; choosing "brand new" saves profile
+- [ ] Lesson 1 available; lesson 2 locked until lesson 1 quiz completed
+- [ ] XP and progress bar update after completing a lesson
+- [ ] Ask MarketMate opens Copilot with prefilled prompt
+- [ ] After diversification lesson, Practice Portfolio unlocks
+- [ ] Practice vs My Portfolio visually distinct (badges + copy)
+- [ ] Demo account: seeded progress, cannot save lesson completion
+- [ ] Regular user: progress persists after refresh
+- [ ] Portfolio/watchlist/currency/copilot unchanged
 

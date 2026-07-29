@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-  AlphaVantageError,
-  fetchSymbolSearch,
-} from "@/lib/stocks/alpha-vantage";
+import { fetchYahooSearch } from "@/lib/stocks/yahoo-finance";
 import { getFriendlySearchError } from "@/lib/errors/user-messages";
 
 export async function GET(request: NextRequest) {
@@ -12,19 +9,17 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ results: [], rateLimited: false });
     }
 
-    const results = await fetchSymbolSearch(q);
+    const results = await fetchYahooSearch(q);
 
     return NextResponse.json({
       results,
       rateLimited: false,
     });
   } catch (err) {
-    const rateLimited =
-      err instanceof AlphaVantageError && err.rateLimited;
     console.error("Search API error:", err);
     return NextResponse.json({
       results: [],
-      rateLimited,
+      rateLimited: false,
       error: getFriendlySearchError(),
     });
   }

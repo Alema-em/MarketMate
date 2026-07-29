@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { fetchQuotesForSymbols } from "@/lib/stocks/alpha-vantage";
+import { fetchQuotesViaYahoo } from "@/lib/stocks/yahoo-finance";
 import { getFallbackQuote } from "@/lib/stocks/fallback-data";
+import { inferQuoteCurrency } from "@/lib/stocks/market-currency";
 
 export async function GET(request: NextRequest) {
   const symbolsParam = request.nextUrl.searchParams.get("symbols");
@@ -24,18 +25,24 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const { quotes, rateLimited } = await fetchQuotesForSymbols(symbols);
+    const { quotes, failed } = await fetchQuotesViaYahoo(symbols);
 
     return NextResponse.json({
       quotes,
-      errors: [],
-      rateLimited,
+      errors: failed,
+      rateLimited: false,
     });
   } catch (err) {
     console.error("Quotes API error:", err);
     return NextResponse.json({
       quotes: Object.fromEntries(
-        symbols.map((symbol) => [symbol, getFallbackQuote(symbol)])
+        symbols.map((symbol) => [
+          symbol,
+          {
+            ...getFallbackQuote(symbol),
+            currency: inferQuoteCurrency(symbol),
+          },
+        ])
       ),
       errors: [],
       rateLimited: true,

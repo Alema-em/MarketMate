@@ -11,8 +11,9 @@ interface WatchlistCardProps {
 }
 
 export function WatchlistCard({ item, onRemove }: WatchlistCardProps) {
-  const { formatUsd } = useCurrency();
+  const { formatAmount } = useCurrency();
   const isPositive = item.changePercent >= 0;
+  const currency = item.currency ?? "USD";
 
   return (
     <article className="glass-card-hover flex items-center justify-between gap-4 p-4">
@@ -28,7 +29,7 @@ export function WatchlistCard({ item, onRemove }: WatchlistCardProps) {
 
       <span className="flex items-center gap-4 shrink-0">
         <span className="text-right">
-          <p className="font-semibold">{formatUsd(item.currentPrice)}</p>
+          <p className="font-semibold">{formatAmount(item.currentPrice, currency)}</p>
           <p
             className={`flex items-center justify-end gap-1 text-sm font-medium ${
               isPositive ? "text-gain" : "text-loss"

@@ -32,7 +32,7 @@ export default function DashboardPage() {
     isEmpty,
     isDemo,
   } = usePortfolio();
-  const { formatUsd, displayCurrency, ratesStale, ratesUnavailable } =
+  const { formatDisplay, displayCurrency, ratesStale, ratesUnavailable } =
     useCurrency();
   const { openAdd } = usePortfolioModal();
   const { data: chartData, loading: chartLoading, isEmpty: chartEmpty } =
@@ -62,7 +62,7 @@ export default function DashboardPage() {
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <StatCard
             label="Portfolio value"
-            value={statsLoading ? "—" : formatUsd(summary.totalValue)}
+            value={statsLoading ? "—" : formatDisplay(summary.totalValue)}
             subValue={
               isEmpty
                 ? "Add investments to begin"
@@ -75,7 +75,7 @@ export default function DashboardPage() {
           />
           <StatCard
             label="Total gain / loss"
-            value={statsLoading ? "—" : formatUsd(summary.totalGain)}
+            value={statsLoading ? "—" : formatDisplay(summary.totalGain)}
             subValue={
               isEmpty
                 ? undefined
@@ -88,7 +88,7 @@ export default function DashboardPage() {
           />
           <StatCard
             label="Total invested"
-            value={statsLoading ? "—" : formatUsd(summary.totalCost)}
+            value={statsLoading ? "—" : formatDisplay(summary.totalCost)}
             icon={DollarSign}
           />
           <StatCard
@@ -103,12 +103,20 @@ export default function DashboardPage() {
           <EmptyState
             icon={Wallet}
             title="Start building your portfolio"
-            description="Add your first investment to track live prices, profit and loss, and performance — all in one place."
+            description="Add NSE/BSE holdings (e.g. RELIANCE.NS) with buy prices in ₹. New to investing? Open Learn for the First Investor path."
             action={
-              <Button size="lg" onClick={openAdd}>
-                <Plus className="h-5 w-5" />
-                Add Your First Investment
-              </Button>
+              <span className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <Button size="lg" onClick={openAdd}>
+                  <Plus className="h-5 w-5" />
+                  Add Your First Investment
+                </Button>
+                <a
+                  href="/learn"
+                  className="text-sm font-medium text-accent hover:underline text-center"
+                >
+                  Start learning instead
+                </a>
+              </span>
             }
           />
         ) : (

@@ -1,11 +1,11 @@
-import type { ChartDataPoint } from "@/types";
-import type { PortfolioHolding } from "@/types/stocks";
 import { CACHE_TTL, getCached, setCached } from "@/lib/stocks/cache";
-import { fetchDailySeries } from "@/lib/stocks/alpha-vantage";
+import { fetchYahooDailySeries } from "@/lib/stocks/yahoo-finance";
 import {
   FALLBACK_CHART_DATA,
   scaleChartToValue,
 } from "@/lib/stocks/fallback-data";
+import type { ChartDataPoint } from "@/types";
+import type { PortfolioHolding } from "@/types/stocks";
 
 function buildChartFromSeries(
   holdings: PortfolioHolding[],
@@ -35,17 +35,19 @@ export async function buildPortfolioChart(
   const cacheKey = `portfolio-chart:${holdings.map((h) => h.symbol).join(",")}`;
   const cached = getCached<ChartDataPoint[]>(cacheKey);
   if (cached) {
-    return { data: scaleChartToValue(cached, currentPortfolioValue), fromFallback: false };
+    return {
+      data: scaleChartToValue(cached, currentPortfolioValue),
+      fromFallback: false,
+    };
   }
 
   const seriesBySymbol: Record<string, Record<string, number>> = {};
   let fetchedAny = false;
 
-  for (const holding of holdings.slice(0, 2)) {
+  for (const holding of holdings.slice(0, 3)) {
     try {
-      seriesBySymbol[holding.symbol.toUpperCase()] = await fetchDailySeries(
-        holding.symbol
-      );
+      seriesBySymbol[holding.symbol.toUpperCase()] =
+        await fetchYahooDailySeries(holding.symbol);
       fetchedAny = true;
     } catch {
       /* use fallback for this symbol */

@@ -6,20 +6,13 @@ import {
   calculateStockGainPercent,
   calculateStockValue,
 } from "@/lib/finance";
+import { inferQuoteCurrency } from "@/lib/stocks/market-currency";
 
 interface CurrencyContextForAi {
   displayCurrency: DisplayCurrency;
-  convertUsd: (usd: number) => number | null;
+  convertAmount: (amount: number, from: DisplayCurrency) => number | null;
   ratesStale: boolean;
   ratesUnavailable: boolean;
-}
-
-function toDisplay(
-  usd: number,
-  ctx: CurrencyContextForAi
-): number {
-  if (ctx.displayCurrency === "USD") return usd;
-  return ctx.convertUsd(usd) ?? usd;
 }
 
 export function buildPortfolioContext(
@@ -47,26 +40,30 @@ export function buildPortfolioContext(
     return base;
   }
 
-  const totalValue = summary.totalValue || 1;
+  const totalValueDisplay = summary.totalValue || 1;
 
   return {
     ...base,
     isEmpty: false,
-    totalValue: toDisplay(summary.totalValue, currencyCtx),
-    totalCost: toDisplay(summary.totalCost, currencyCtx),
-    totalGain: toDisplay(summary.totalGain, currencyCtx),
+    // Summary totals are already in display currency from usePortfolio.
+    totalValue: summary.totalValue,
+    totalCost: summary.totalCost,
+    totalGain: summary.totalGain,
     totalGainPercent: summary.totalGainPercent,
     holdings: stocks.map((s) => {
-      const valueUsd = calculateStockValue(s);
+      const from = s.currency ?? inferQuoteCurrency(s.symbol);
+      const toDisplay = (n: number) =>
+        currencyCtx.convertAmount(n, from) ?? n;
+      const valueNative = calculateStockValue(s);
       return {
         symbol: s.symbol,
         name: s.name,
         shares: s.shares,
-        avgCost: toDisplay(s.avgCost, currencyCtx),
-        currentPrice: toDisplay(s.currentPrice, currencyCtx),
-        value: toDisplay(valueUsd, currencyCtx),
+        avgCost: toDisplay(s.avgCost),
+        currentPrice: toDisplay(s.currentPrice),
+        value: toDisplay(valueNative),
         gainPercent: calculateStockGainPercent(s),
-        weightPercent: (valueUsd / totalValue) * 100,
+        weightPercent: (toDisplay(valueNative) / totalValueDisplay) * 100,
       };
     }),
   };

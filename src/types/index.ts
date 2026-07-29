@@ -1,3 +1,5 @@
+import type { DisplayCurrency } from "@/types/currency";
+
 export interface Stock {
   id: string;
   symbol: string;
@@ -6,6 +8,8 @@ export interface Stock {
   avgCost: number;
   currentPrice: number;
   purchaseDate: string;
+  /** Currency of avgCost / currentPrice (INR for Indian listings). */
+  currency?: DisplayCurrency;
 }
 
 export interface WatchlistItem {
@@ -14,6 +18,7 @@ export interface WatchlistItem {
   name: string;
   currentPrice: number;
   changePercent: number;
+  currency?: DisplayCurrency;
 }
 
 export interface PortfolioSummary {

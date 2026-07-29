@@ -21,7 +21,7 @@ export function PortfolioChart({
   data,
   title = "Portfolio performance",
 }: PortfolioChartProps) {
-  const { formatUsd, formatCompactUsd } = useCurrency();
+  const { formatDisplay, formatCompactDisplay } = useCurrency();
 
   return (
     <section className="glass-card p-5 sm:p-6">
@@ -71,7 +71,7 @@ export function PortfolioChart({
               axisLine={false}
               tickLine={false}
               tick={{ fill: "#94a3b8", fontSize: 12 }}
-              tickFormatter={(v) => formatCompactUsd(v)}
+              tickFormatter={(v) => formatCompactDisplay(v)}
               width={56}
             />
             <Tooltip
@@ -82,7 +82,7 @@ export function PortfolioChart({
                 boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
               }}
               labelStyle={{ color: "#94a3b8" }}
-              formatter={(value: number) => [formatUsd(value), "Value"]}
+              formatter={(value: number) => [formatDisplay(value), "Value"]}
             />
             <Area
               type="monotone"

@@ -61,11 +61,24 @@ export function CurrencySelector() {
             : "Exchange rates may be outdated — values are indicative."}
         </p>
       )}
-      {displayCurrency !== "USD" && canConvert && !showFxWarning && (
+      {displayCurrency === "USD" && (
         <p className="px-1 text-[11px] text-muted">
-          Holdings stored in USD; prices converted for display.
+          Showing USD. Switch to INR for NSE/BSE portfolios.
         </p>
       )}
+      {displayCurrency === "INR" && canConvert && !showFxWarning && (
+        <p className="px-1 text-[11px] text-muted">
+          Indian stocks (.NS/.BO) stay in ₹. Other markets convert to ₹.
+        </p>
+      )}
+      {displayCurrency !== "USD" &&
+        displayCurrency !== "INR" &&
+        canConvert &&
+        !showFxWarning && (
+          <p className="px-1 text-[11px] text-muted">
+            Prices convert from each stock&apos;s market currency for display.
+          </p>
+        )}
     </div>
   );
 }

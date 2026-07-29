@@ -23,11 +23,12 @@ export function StockCard({
   onEdit,
   onDelete,
 }: StockCardProps) {
-  const { formatUsd } = useCurrency();
+  const { formatAmount } = useCurrency();
   const gain = calculateStockGain(stock);
   const gainPercent = calculateStockGainPercent(stock);
   const isPositive = gain >= 0;
   const value = calculateStockValue(stock);
+  const currency = stock.currency ?? "USD";
 
   return (
     <article className="glass-card-hover p-4 sm:p-5">
@@ -90,13 +91,13 @@ export function StockCard({
         className={`mt-4 grid gap-3 ${compact ? "grid-cols-2" : "grid-cols-2 sm:grid-cols-4"}`}
       >
         <Metric label="Shares" value={stock.shares.toString()} />
-        <Metric label="Avg cost" value={formatUsd(stock.avgCost)} />
-        <Metric label="Price" value={formatUsd(stock.currentPrice)} />
+        <Metric label="Avg cost" value={formatAmount(stock.avgCost, currency)} />
+        <Metric label="Price" value={formatAmount(stock.currentPrice, currency)} />
         <Metric
           label="Value"
-          value={formatUsd(value)}
+          value={formatAmount(value, currency)}
           highlight={isPositive ? "gain" : "loss"}
-          sub={formatUsd(gain)}
+          sub={formatAmount(gain, currency)}
         />
       </section>
     </article>

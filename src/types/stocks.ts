@@ -1,3 +1,5 @@
+import type { DisplayCurrency } from "@/types/currency";
+
 export interface StockQuote {
   symbol: string;
   name: string;
@@ -6,6 +8,8 @@ export interface StockQuote {
   changePercent: number;
   lastUpdated: string;
   fromFallback: boolean;
+  /** Market currency of the quote (INR for .NS/.BO, USD for most US tickers). */
+  currency?: DisplayCurrency;
 }
 
 export interface StockSearchResult {

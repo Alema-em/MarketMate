@@ -44,7 +44,7 @@ export function useAIChat({
 
   const {
     displayCurrency,
-    convertUsd,
+    convertAmount,
     ratesStale,
     ratesUnavailable,
   } = useCurrency();
@@ -53,7 +53,7 @@ export function useAIChat({
     () =>
       buildPortfolioContext(stocks, summary, isEmpty, isDemo, {
         displayCurrency,
-        convertUsd,
+        convertAmount,
         ratesStale,
         ratesUnavailable,
       }),
@@ -63,7 +63,7 @@ export function useAIChat({
       isEmpty,
       isDemo,
       displayCurrency,
-      convertUsd,
+      convertAmount,
       ratesStale,
       ratesUnavailable,
     ]

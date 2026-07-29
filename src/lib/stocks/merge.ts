@@ -1,10 +1,14 @@
 import type { Stock, WatchlistItem } from "@/types";
 import type { PortfolioHolding, StockQuote } from "@/types/stocks";
+import { inferQuoteCurrency } from "@/lib/stocks/market-currency";
 
 export function mergeHoldingWithQuote(
   holding: PortfolioHolding,
   quote: StockQuote
 ): Stock {
+  const currency =
+    quote.currency ?? inferQuoteCurrency(holding.symbol);
+
   return {
     id: holding.id,
     symbol: holding.symbol.toUpperCase(),
@@ -13,6 +17,7 @@ export function mergeHoldingWithQuote(
     avgCost: holding.avgCost,
     currentPrice: quote.price,
     purchaseDate: holding.purchaseDate,
+    currency,
   };
 }
 
@@ -26,5 +31,6 @@ export function quoteToWatchlistItem(
     name: quote.name,
     currentPrice: quote.price,
     changePercent: quote.changePercent,
+    currency: quote.currency ?? inferQuoteCurrency(quote.symbol),
   };
 }
