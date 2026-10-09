@@ -25,26 +25,11 @@ export function PortfolioChart({
 
   return (
     <section className="glass-card p-5 sm:p-6">
-      <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <span>
-          <h2 className="text-lg font-semibold">{title}</h2>
-          <p className="text-sm text-muted">12-month value trend</p>
-        </span>
-        <span className="flex gap-2">
-          {["1M", "3M", "6M", "1Y", "ALL"].map((period) => (
-            <button
-              key={period}
-              type="button"
-              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
-                period === "1Y"
-                  ? "bg-accent/15 text-accent"
-                  : "text-muted hover:bg-white/5 hover:text-foreground"
-              }`}
-            >
-              {period}
-            </button>
-          ))}
-        </span>
+      <header className="mb-6">
+        <h2 className="font-serif text-2xl leading-none tracking-[-0.03em]">
+          {title}
+        </h2>
+        <p className="mt-2 text-sm text-muted">Twelve-month value</p>
       </header>
 
       <span className="h-64 w-full sm:h-72">
@@ -52,8 +37,8 @@ export function PortfolioChart({
           <AreaChart data={data} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="portfolioGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#22c55e" stopOpacity={0.35} />
-                <stop offset="100%" stopColor="#22c55e" stopOpacity={0} />
+                <stop offset="0%" stopColor="#8eb4ff" stopOpacity={0.28} />
+                <stop offset="100%" stopColor="#8eb4ff" stopOpacity={0} />
               </linearGradient>
             </defs>
             <CartesianGrid
@@ -65,29 +50,29 @@ export function PortfolioChart({
               dataKey="date"
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "#94a3b8", fontSize: 12 }}
+              tick={{ fill: "#9aa6b8", fontSize: 11 }}
             />
             <YAxis
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "#94a3b8", fontSize: 12 }}
+              tick={{ fill: "#9aa6b8", fontSize: 11 }}
               tickFormatter={(v) => formatCompactDisplay(v)}
               width={56}
             />
             <Tooltip
               contentStyle={{
-                background: "#1a2332",
+                background: "#10151d",
                 border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: "12px",
-                boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
+                borderRadius: "8px",
+                fontSize: "12px",
               }}
-              labelStyle={{ color: "#94a3b8" }}
+              labelStyle={{ color: "#9aa6b8" }}
               formatter={(value: number) => [formatDisplay(value), "Value"]}
             />
             <Area
               type="monotone"
               dataKey="value"
-              stroke="#22c55e"
+              stroke="#e7eef8"
               strokeWidth={2}
               fill="url(#portfolioGradient)"
             />

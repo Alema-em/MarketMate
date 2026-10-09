@@ -2,7 +2,6 @@
 
 import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
-import { TrendingUp } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { getFriendlyAuthError } from "@/lib/errors/user-messages";
 
@@ -50,11 +49,6 @@ const TAPE = [
   { name: "NIFTY 50", value: "24,182.40", move: 0.42 },
   { name: "SENSEX", value: "79,540.10", move: 0.31 },
   { name: "NIFTY BANK", value: "51,204.65", move: -0.18 },
-  { name: "RELIANCE", value: "2,946.15", move: 1.24 },
-  { name: "TCS", value: "4,112.80", move: 0.41 },
-  { name: "HDFCBANK", value: "1,684.25", move: -0.38 },
-  { name: "INFY", value: "1,842.60", move: 0.67 },
-  { name: "ITC", value: "482.30", move: 0.12 },
 ];
 
 const AXIS = ["09:15", "12:00", "14:00", "15:30"];
@@ -126,11 +120,9 @@ function getNseSession(now = new Date()) {
   };
 }
 
-const sans =
-  "[font-family:var(--font-login-sans),ui-sans-serif,system-ui,sans-serif]";
-const serif = "[font-family:var(--font-login-serif),Georgia,serif]";
-const mono =
-  "[font-family:var(--font-login-mono),ui-monospace,monospace] tabular-nums";
+const sans = "";
+const serif = "font-serif";
+const mono = "font-mono tabular-nums";
 
 export function LoginScreen() {
   const { user, loading, signInWithGoogle, firebaseReady } = useAuth();
@@ -159,7 +151,7 @@ export function LoginScreen() {
   if (loading || user) {
     return (
       <div
-        className={`${sans} flex min-h-screen items-center justify-center bg-[#080b10] text-sm text-muted`}
+        className={`${sans} flex min-h-screen items-center justify-center bg-background text-sm text-muted`}
       >
         <span className="mr-3 h-4 w-4 animate-spin rounded-full border border-white/20 border-t-white" />
         Checking session
@@ -169,12 +161,12 @@ export function LoginScreen() {
 
   return (
     <main
-      className={`${sans} min-h-screen bg-[#080b10] text-foreground selection:bg-accent/30 lg:grid lg:min-h-screen lg:grid-cols-[minmax(0,1fr)_minmax(320px,400px)] lg:grid-rows-[auto_auto_auto_minmax(1.5rem,1fr)_auto]`}
+      className={`${sans} min-h-screen bg-background text-foreground lg:grid lg:min-h-screen lg:grid-cols-[minmax(0,1fr)_minmax(320px,400px)] lg:grid-rows-[auto_auto_auto_auto]`}
     >
       <header className="flex items-center justify-between gap-4 px-6 pt-6 sm:px-10 lg:col-start-1 lg:row-start-1 lg:px-12 lg:pt-8 xl:px-16">
         <div className="flex items-center gap-2.5">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-white">
-            <TrendingUp className="h-4 w-4" strokeWidth={2.25} />
+          <span className="flex h-8 w-8 items-center justify-center rounded-md bg-foreground font-serif text-[15px] text-background">
+            M
           </span>
           <span className="text-[15px] font-semibold tracking-[-0.01em]">
             MarketMate
@@ -210,13 +202,13 @@ export function LoginScreen() {
         <SampleBook />
       </div>
 
-      <div className="hidden lg:col-start-1 lg:row-start-4 lg:block" />
-
-      <div className="px-6 pb-6 pt-8 sm:px-10 lg:col-start-1 lg:row-start-5 lg:px-12 lg:pb-8 xl:px-16">
-        <Tape />
-        <p className={`${mono} mt-4 text-[11px] text-muted`}>
-          © {new Date().getFullYear()} MarketMate
-        </p>
+      <div className="px-6 pb-8 pt-6 sm:px-10 lg:col-start-1 lg:row-start-4 lg:px-12 lg:pb-8 xl:px-16">
+        <div className="max-w-[680px]">
+          <IndexStrip />
+          <p className={`${mono} mt-4 text-[11px] text-muted`}>
+            © {new Date().getFullYear()} MarketMate
+          </p>
+        </div>
       </div>
     </main>
   );
@@ -288,7 +280,7 @@ function SampleBook() {
 
   return (
     <section
-      className="max-w-[680px] overflow-hidden rounded-xl border border-white/[0.08] bg-[#10151d] shadow-[0_30px_80px_-48px_rgba(0,0,0,0.85)]"
+      className="glass-card max-w-[680px] overflow-hidden"
       aria-labelledby="sample-book-title"
     >
       <div className="flex items-center justify-between gap-4 border-b border-white/[0.06] px-5 py-3 sm:px-6">
@@ -394,7 +386,7 @@ function SampleBook() {
 
           {point && (
             <div
-              className="pointer-events-none absolute top-2 z-10 rounded-md border border-white/10 bg-[#0c1017]/95 px-2.5 py-1.5 shadow-lg"
+              className="pointer-events-none absolute top-2 z-10 rounded-md border border-border bg-background/95 px-2.5 py-1.5"
               style={{
                 left: `${(point.x / VIEW_W) * 100}%`,
                 transform:
@@ -459,34 +451,26 @@ function SampleBook() {
   );
 }
 
-function Tape() {
-  const items = [...TAPE, ...TAPE];
-
+function IndexStrip() {
   return (
-    <div className="login-ticker flex items-center gap-4 border-t border-white/[0.06] pt-4">
+    <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-3 border-t border-white/[0.06] pt-4">
       <p className="sr-only">
-        Illustrative session tape. These are not live market prices.
+        Illustrative index levels. These are not live market prices.
       </p>
-      <span
-        className={`${mono} hidden shrink-0 text-[10px] uppercase tracking-[0.16em] text-muted sm:inline`}
-      >
+      <div className="flex flex-wrap gap-x-8 gap-y-3" aria-hidden>
+        {TAPE.map((item) => (
+          <span key={item.name} className="flex items-baseline gap-2 text-[12px]">
+            <span className="text-foreground/85">{item.name}</span>
+            <span className={`${mono} text-[11px] text-muted`}>{item.value}</span>
+            <span className={item.move >= 0 ? "text-gain" : "text-loss"}>
+              {formatMove(item.move)}
+            </span>
+          </span>
+        ))}
+      </div>
+      <span className={`${mono} text-[10px] uppercase tracking-[0.16em] text-muted`}>
         Illustrative
       </span>
-      <div className="relative min-w-0 flex-1 overflow-hidden" aria-hidden>
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 bg-gradient-to-r from-[#080b10] to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-[#080b10] to-transparent" />
-        <div className="login-ticker-track flex w-max items-baseline gap-8 pr-8">
-          {items.map((item, index) => (
-            <span key={`${item.name}-${index}`} className="flex items-baseline gap-2 text-[12px]">
-              <span className="text-foreground/85">{item.name}</span>
-              <span className={`${mono} text-[11px] text-muted`}>{item.value}</span>
-              <span className={item.move >= 0 ? "text-gain" : "text-loss"}>
-                {formatMove(item.move)}
-              </span>
-            </span>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
@@ -503,7 +487,7 @@ function SignInPanel({
   onSignIn: () => void;
 }) {
   return (
-    <section className="flex items-center px-6 py-10 sm:px-10 lg:col-start-2 lg:row-span-5 lg:row-start-1 lg:h-full lg:border-l lg:border-white/[0.08] lg:bg-[#0c1017] lg:px-10 lg:py-8">
+    <section className="flex items-center bg-surface px-6 py-10 sm:px-10 lg:col-start-2 lg:row-span-4 lg:row-start-1 lg:h-full lg:border-l lg:border-border lg:px-10 lg:py-8">
       <div className="w-full lg:max-w-[320px]">
         <p className={`${mono} text-[11px] uppercase tracking-[0.16em] text-muted`}>
           Account
@@ -552,6 +536,21 @@ function SignInPanel({
         <p className="mt-4 text-xs leading-5 text-muted">
           Your holdings are stored against this Google account.
         </p>
+        <ul className="mt-8 divide-y divide-white/[0.06] border-t border-white/[0.06]">
+          {[
+            ["Portfolio", "Positions and P/L"],
+            ["Watchlist", "Names you follow"],
+            ["Learn", "First investor path"],
+          ].map(([title, detail]) => (
+            <li
+              key={title}
+              className="flex items-baseline justify-between gap-4 py-3 text-sm"
+            >
+              <span className="text-foreground">{title}</span>
+              <span className="text-xs text-muted">{detail}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

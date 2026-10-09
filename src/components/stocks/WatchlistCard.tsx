@@ -1,6 +1,6 @@
 "use client";
 
-import { Star, TrendingDown, TrendingUp, X } from "lucide-react";
+import { Star, X } from "lucide-react";
 import type { WatchlistItem } from "@/types";
 import { useCurrency } from "@/context/CurrencyContext";
 import { formatPercent } from "@/lib/finance";
@@ -18,28 +18,27 @@ export function WatchlistCard({ item, onRemove }: WatchlistCardProps) {
   return (
     <article className="glass-card-hover flex items-center justify-between gap-4 p-4">
       <span className="flex items-center gap-3 min-w-0">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-surface-elevated text-xs font-bold ring-1 ring-border">
-          {item.symbol.slice(0, 2)}
+        <span className="mark h-10 w-10 font-mono text-[11px]">
+          {item.symbol.replace(/\.(NS|BO)$/i, "").slice(0, 2)}
         </span>
         <span className="min-w-0">
-          <h3 className="font-semibold">{item.symbol}</h3>
+          <h3 className="font-mono text-sm font-medium tracking-tight">
+            {item.symbol}
+          </h3>
           <p className="truncate text-sm text-muted">{item.name}</p>
         </span>
       </span>
 
       <span className="flex items-center gap-4 shrink-0">
         <span className="text-right">
-          <p className="font-semibold">{formatAmount(item.currentPrice, currency)}</p>
+          <p className="font-mono text-sm tabular-nums">
+            {formatAmount(item.currentPrice, currency)}
+          </p>
           <p
-            className={`flex items-center justify-end gap-1 text-sm font-medium ${
+            className={`font-mono text-xs tabular-nums ${
               isPositive ? "text-gain" : "text-loss"
             }`}
           >
-            {isPositive ? (
-              <TrendingUp className="h-3.5 w-3.5" />
-            ) : (
-              <TrendingDown className="h-3.5 w-3.5" />
-            )}
             {formatPercent(item.changePercent)}
           </p>
         </span>

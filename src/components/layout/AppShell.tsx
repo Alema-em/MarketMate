@@ -25,9 +25,11 @@ export function AppShell({ children, title }: AppShellProps) {
         <Sidebar mobileOpen={mobileOpen} onMobileClose={closeMobile} />
         <span className="flex flex-1 flex-col min-w-0">
           <MobileHeader onMenuClick={openMobile} title={title} />
-          <main className="flex-1 overflow-auto p-4 sm:p-6 lg:p-8 scrollbar-thin">
-            <header className="mb-6 hidden lg:block">
-              <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
+          <main className="scrollbar-thin flex-1 overflow-auto px-4 py-6 sm:px-6 lg:px-10 lg:py-8">
+            <header className="mb-8 hidden lg:block">
+              <h1 className="font-serif text-[2rem] leading-none tracking-[-0.03em]">
+                {title}
+              </h1>
             </header>
             {isDemo && (
               <span className="mb-6 block">

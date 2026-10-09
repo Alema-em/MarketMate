@@ -14,10 +14,10 @@ export function ChatMessageBubble({ message }: ChatMessageBubbleProps) {
       className={`chat-message-enter flex min-w-0 gap-3 ${isUser ? "flex-row-reverse" : ""}`}
     >
       <div
-        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${
+        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
           isUser
-            ? "bg-accent/20 text-accent"
-            : "bg-gradient-to-br from-accent to-violet-500 text-white shadow-lg shadow-accent/20"
+            ? "bg-foreground text-background"
+            : "mark"
         }`}
       >
         {isUser ? (

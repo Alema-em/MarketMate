@@ -44,11 +44,13 @@ export function LearningOnboarding({ saving, onComplete }: LearningOnboardingPro
   return (
     <section className="mx-auto max-w-lg glass-card p-6 sm:p-8">
       <div className="mb-6 flex items-center gap-3">
-        <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-accent shadow-lg shadow-accent/20">
-          <GraduationCap className="h-6 w-6 text-white" />
+        <span className="mark h-10 w-10">
+          <GraduationCap className="h-4 w-4" />
         </span>
         <div>
-          <h1 className="text-xl font-bold">Welcome to Learn</h1>
+          <h1 className="font-serif text-2xl leading-none tracking-[-0.03em]">
+            Welcome to Learn
+          </h1>
           <p className="text-sm text-muted">Tell us where you&apos;re starting from</p>
         </div>
       </div>

@@ -15,13 +15,17 @@ export function EmptyState({
   action,
 }: EmptyStateProps) {
   return (
-    <section className="glass-card flex flex-col items-center justify-center px-6 py-16 text-center">
-      <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-accent/20 to-emerald-500/10 ring-1 ring-border">
-        <Icon className="h-8 w-8 text-accent" />
+    <section className="glass-card px-6 py-14 text-center">
+      <span className="mark mx-auto h-10 w-10 text-muted">
+        <Icon className="h-5 w-5" />
       </span>
-      <h2 className="mt-6 text-xl font-semibold tracking-tight">{title}</h2>
-      <p className="mt-2 max-w-sm text-sm text-muted">{description}</p>
-      {action && <span className="mt-8">{action}</span>}
+      <h2 className="mt-5 font-serif text-3xl leading-none tracking-[-0.03em]">
+        {title}
+      </h2>
+      <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-muted">
+        {description}
+      </p>
+      {action && <span className="mt-8 block">{action}</span>}
     </section>
   );
 }

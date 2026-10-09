@@ -101,7 +101,10 @@ export function InvestmentModal() {
       <div className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto rounded-t-2xl sm:rounded-2xl border border-border bg-surface shadow-2xl scrollbar-thin">
         <header className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-surface/95 px-6 py-4 backdrop-blur-xl">
           <span>
-            <h2 id="investment-modal-title" className="text-lg font-semibold">
+            <h2
+              id="investment-modal-title"
+              className="font-serif text-2xl leading-none tracking-[-0.03em]"
+            >
               {editing ? "Edit investment" : "Add investment"}
             </h2>
             <p className="text-sm text-muted">

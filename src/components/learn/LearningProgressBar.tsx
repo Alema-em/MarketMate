@@ -29,7 +29,7 @@ export function LearningProgressBar({
         aria-valuemax={100}
       >
         <div
-          className="h-full rounded-full bg-gradient-to-r from-accent to-emerald-500 transition-all duration-500"
+          className="h-full rounded-full bg-foreground/80 transition-all duration-500"
           style={{ width: `${percent}%` }}
         />
       </div>

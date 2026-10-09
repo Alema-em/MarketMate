@@ -27,26 +27,19 @@ export function AIInsightsPlaceholder({
   }
 
   return (
-    <section className="glass-card relative overflow-hidden p-6 sm:p-8">
-      <span
-        className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-accent/10 blur-3xl"
-        aria-hidden
-      />
-      <span
-        className="pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-emerald-500/10 blur-3xl"
-        aria-hidden
-      />
-
-      <header className="relative flex items-start gap-4">
-        <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-accent to-violet-500 shadow-lg shadow-accent/25">
-          <Bot className="h-6 w-6 text-white" />
+    <section className="glass-card p-6 sm:p-8">
+      <header className="flex items-start gap-4">
+        <span className="mark h-10 w-10">
+          <Bot className="h-4 w-4" />
         </span>
         <span>
           <span className="inline-flex items-center gap-2 rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
             <Sparkles className="h-3.5 w-3.5" />
             Coming soon
           </span>
-          <h2 className="mt-2 text-xl font-semibold">AI Portfolio Insights</h2>
+          <h2 className="mt-2 font-serif text-2xl leading-none tracking-[-0.03em]">
+            AI Portfolio Insights
+          </h2>
           <p className="mt-1 max-w-xl text-sm text-muted">
             Personalized analysis, risk alerts, and smart rebalancing suggestions
             powered by AI — integrated in a future release.

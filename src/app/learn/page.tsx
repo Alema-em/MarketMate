@@ -65,7 +65,9 @@ export default function LearnPage() {
                   Educational path — separate from My Portfolio
                 </LearnZoneNote>
               </div>
-              <h2 className="text-xl font-bold sm:text-2xl">{path.title}</h2>
+              <h2 className="font-serif text-2xl leading-none tracking-[-0.03em] sm:text-3xl">
+                {path.title}
+              </h2>
               <p className="text-sm text-muted max-w-2xl">{path.description}</p>
               {profile?.experienceLevel === "brand_new" && (
                 <p className="text-sm text-accent">

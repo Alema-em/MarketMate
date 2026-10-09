@@ -1,6 +1,6 @@
 "use client";
 
-import { Pencil, TrendingDown, TrendingUp, Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import type { Stock } from "@/types";
 import { useCurrency } from "@/context/CurrencyContext";
 import {
@@ -34,12 +34,14 @@ export function StockCard({
     <article className="glass-card-hover p-4 sm:p-5">
       <header className="flex items-start justify-between gap-3">
         <span className="flex items-center gap-3 min-w-0">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-surface-elevated text-sm font-bold text-foreground ring-1 ring-border">
-            {stock.symbol.slice(0, 2)}
+          <span className="mark h-10 w-10 font-mono text-[11px] tracking-tight">
+            {stock.symbol.replace(/\.(NS|BO)$/i, "").slice(0, 2)}
           </span>
           <span className="min-w-0">
-            <h3 className="font-semibold text-foreground">{stock.symbol}</h3>
-            <p className="text-sm text-muted line-clamp-1">{stock.name}</p>
+            <h3 className="font-mono text-sm font-medium tracking-tight text-foreground">
+              {stock.symbol}
+            </h3>
+            <p className="line-clamp-1 text-sm text-muted">{stock.name}</p>
             {!compact && stock.purchaseDate && (
               <p className="text-xs text-muted mt-0.5">
                 Purchased {formatPurchaseDate(stock.purchaseDate)}
@@ -49,15 +51,10 @@ export function StockCard({
         </span>
         <span className="flex items-start gap-2 shrink-0">
           <span
-            className={`inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold ${
-              isPositive ? "bg-gain-muted text-gain" : "bg-loss-muted text-loss"
+            className={`font-mono text-sm tabular-nums ${
+              isPositive ? "text-gain" : "text-loss"
             }`}
           >
-            {isPositive ? (
-              <TrendingUp className="h-3.5 w-3.5" />
-            ) : (
-              <TrendingDown className="h-3.5 w-3.5" />
-            )}
             {formatPercent(gainPercent)}
           </span>
           {(onEdit || onDelete) && (
@@ -129,8 +126,12 @@ function Metric({
 }) {
   return (
     <span className="flex flex-col">
-      <span className="text-xs text-muted">{label}</span>
-      <span className="mt-0.5 text-sm font-semibold text-foreground">{value}</span>
+      <span className="text-[11px] uppercase tracking-[0.12em] text-muted">
+        {label}
+      </span>
+      <span className="mt-1 font-mono text-sm tabular-nums text-foreground">
+        {value}
+      </span>
       {sub && (
         <span
           className={`text-xs font-medium ${

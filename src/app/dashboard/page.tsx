@@ -131,7 +131,9 @@ export default function DashboardPage() {
 
             <section className="space-y-4">
               <header className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold">Top holdings</h2>
+                <h2 className="font-serif text-2xl leading-none tracking-[-0.03em]">
+                  Top holdings
+                </h2>
                 <a
                   href="/portfolio"
                   className="text-sm font-medium text-accent hover:underline"

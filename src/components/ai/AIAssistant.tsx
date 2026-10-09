@@ -76,11 +76,13 @@ export function AIAssistant({
     >
       <header className="flex items-center justify-between gap-4 border-b border-border bg-surface-elevated/30 px-4 py-4 sm:px-5">
         <div className="flex min-w-0 items-center gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-accent to-violet-500 shadow-lg shadow-accent/25">
-            <Bot className="h-5 w-5 text-white" />
+          <div className="mark h-10 w-10">
+            <Bot className="h-4 w-4" />
           </div>
           <div className="min-w-0">
-            <h2 className="font-semibold tracking-tight">MarketMate AI</h2>
+            <h2 className="font-serif text-xl leading-none tracking-[-0.03em]">
+              Copilot
+            </h2>
             <p className="text-xs text-muted">
               Educational investing copilot - Not financial advice
             </p>
@@ -136,7 +138,7 @@ export function AIAssistant({
 
         {loading && (
           <div className="chat-message-enter flex min-w-0 gap-3">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-accent to-violet-500 text-white">
+            <div className="mark h-8 w-8">
               <Bot className="h-4 w-4" />
             </div>
             <div className="glass-card rounded-2xl rounded-tl-md border border-border">

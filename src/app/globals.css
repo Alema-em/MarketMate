@@ -1,20 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #0a0e17;
-  --color-surface: #111827;
-  --color-surface-elevated: #1a2332;
+  --color-background: #080b10;
+  --color-surface: #10151d;
+  --color-surface-elevated: #171e2a;
   --color-border: rgba(255, 255, 255, 0.08);
-  --color-border-strong: rgba(255, 255, 255, 0.12);
-  --color-muted: #94a3b8;
-  --color-foreground: #f1f5f9;
-  --color-accent: #3b82f6;
-  --color-accent-glow: rgba(59, 130, 246, 0.25);
-  --color-gain: #22c55e;
-  --color-gain-muted: rgba(34, 197, 94, 0.15);
-  --color-loss: #ef4444;
-  --color-loss-muted: rgba(239, 68, 68, 0.15);
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --color-border-strong: rgba(255, 255, 255, 0.16);
+  --color-muted: #9aa6b8;
+  --color-foreground: #f4f7fb;
+  --color-accent: #8eb4ff;
+  --color-accent-glow: transparent;
+  --color-gain: #3dbe86;
+  --color-gain-muted: rgba(61, 190, 134, 0.12);
+  --color-loss: #f07178;
+  --color-loss-muted: rgba(240, 113, 120, 0.12);
+  --font-sans: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument-serif), Georgia, serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
 @layer base {
@@ -28,32 +30,28 @@
 
   body {
     @apply bg-background text-foreground font-sans min-h-screen;
-    background-image:
-      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.12), transparent),
-      radial-gradient(ellipse 60% 40% at 100% 0%, rgba(34, 197, 94, 0.06), transparent);
+  }
+
+  ::selection {
+    background: rgba(142, 180, 255, 0.28);
   }
 }
 
 @layer utilities {
   .glass-card {
-    @apply rounded-2xl border border-border bg-surface/60 backdrop-blur-xl;
-    box-shadow:
-      0 4px 24px rgba(0, 0, 0, 0.25),
-      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    @apply rounded-xl border border-border bg-surface;
   }
 
   .glass-card-hover {
-    @apply rounded-2xl border border-border bg-surface/60 backdrop-blur-xl transition-all duration-200;
-    box-shadow:
-      0 4px 24px rgba(0, 0, 0, 0.25),
-      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    @apply rounded-xl border border-border bg-surface transition-colors duration-150;
   }
 
   .glass-card-hover:hover {
-    @apply border-border-strong bg-surface-elevated/70;
-    box-shadow:
-      0 8px 32px rgba(0, 0, 0, 0.35),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    @apply border-border-strong bg-surface-elevated;
+  }
+
+  .mark {
+    @apply inline-flex shrink-0 items-center justify-center rounded-lg border border-border bg-surface-elevated text-foreground;
   }
 
   .text-gain {
@@ -107,15 +105,6 @@
     animation: login-fade 0.8s ease 0.7s forwards;
   }
 
-  .login-ticker-track {
-    animation: login-ticker 46s linear infinite;
-  }
-
-  .login-ticker:hover .login-ticker-track,
-  .login-ticker:focus-within .login-ticker-track {
-    animation-play-state: paused;
-  }
-
   @keyframes login-draw {
     to {
       stroke-dashoffset: 0;
@@ -128,15 +117,6 @@
     }
   }
 
-  @keyframes login-ticker {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(-50%);
-    }
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .login-chart-line {
       animation: none;
@@ -146,10 +126,6 @@
     .login-chart-fill {
       animation: none;
       opacity: 1;
-    }
-
-    .login-ticker-track {
-      animation: none;
     }
   }
 }

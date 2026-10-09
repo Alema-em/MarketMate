@@ -17,20 +17,18 @@ export function DemoInsightsPanel({ compact = false }: { compact?: boolean }) {
     <section
       className={`glass-card relative overflow-hidden ${compact ? "p-5" : "p-6 sm:p-8"}`}
     >
-      <span
-        className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-violet-500/15 blur-3xl"
-        aria-hidden
-      />
       <header className="relative flex items-start gap-4">
-        <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-accent to-violet-500 shadow-lg shadow-accent/25">
-          <Bot className="h-6 w-6 text-white" />
+        <span className="mark h-10 w-10">
+          <Bot className="h-4 w-4" />
         </span>
         <span>
           <span className="inline-flex items-center gap-2 rounded-full bg-gain-muted px-3 py-1 text-xs font-medium text-gain">
             <Sparkles className="h-3.5 w-3.5" />
             AI preview · Demo portfolio
           </span>
-          <h2 className="mt-2 text-xl font-semibold">Portfolio intelligence</h2>
+          <h2 className="mt-2 font-serif text-2xl leading-none tracking-[-0.03em]">
+            Portfolio intelligence
+          </h2>
           <p className="mt-1 max-w-2xl text-sm text-muted">{DEMO_INSIGHTS.summary}</p>
         </span>
       </header>
