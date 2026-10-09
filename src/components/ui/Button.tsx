@@ -12,18 +12,17 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
-  primary:
-    "bg-accent text-white hover:bg-blue-500 shadow-lg shadow-accent-glow",
+  primary: "bg-[#f4f0e6] text-[#1c1915] hover:bg-white",
   secondary:
-    "bg-surface-elevated border border-border text-foreground hover:bg-surface hover:border-border-strong",
-  ghost: "text-muted hover:text-foreground hover:bg-white/5",
-  danger: "bg-loss/20 text-loss hover:bg-loss/30 border border-loss/30",
+    "border border-white/10 bg-surface text-foreground hover:border-white/20 hover:bg-surface-elevated",
+  ghost: "text-muted hover:bg-white/5 hover:text-foreground",
+  danger: "border border-loss/30 bg-loss/15 text-loss hover:bg-loss/25",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
-  sm: "px-3 py-1.5 text-sm rounded-lg",
-  md: "px-4 py-2.5 text-sm rounded-xl",
-  lg: "px-6 py-3 text-base rounded-xl",
+  sm: "rounded-md px-3 py-1.5 text-sm",
+  md: "rounded-md px-4 py-2.5 text-sm",
+  lg: "rounded-md px-6 py-3 text-base",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -47,7 +46,13 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {loading && (
-          <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+          <span
+            className={`h-4 w-4 animate-spin rounded-full border-2 ${
+              variant === "primary"
+                ? "border-[#1c1915]/25 border-t-[#1c1915]"
+                : "border-current/30 border-t-current"
+            }`}
+          />
         )}
         {children}
       </button>

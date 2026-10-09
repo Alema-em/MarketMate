@@ -98,10 +98,10 @@ export function InvestmentModal() {
         onClick={close}
         aria-label="Close modal"
       />
-      <div className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto rounded-t-2xl sm:rounded-2xl border border-border bg-surface shadow-2xl scrollbar-thin">
-        <header className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-surface/95 px-6 py-4 backdrop-blur-xl">
+      <div className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto border border-white/10 bg-surface scrollbar-thin sm:max-h-[85vh]">
+        <header className="sticky top-0 z-10 flex items-center justify-between border-b border-white/10 bg-surface px-6 py-4">
           <span>
-            <h2 id="investment-modal-title" className="text-lg font-semibold">
+            <h2 id="investment-modal-title" className="font-serif text-2xl font-normal tracking-tight">
               {editing ? "Edit investment" : "Add investment"}
             </h2>
             <p className="text-sm text-muted">
@@ -132,7 +132,7 @@ export function InvestmentModal() {
               <input
                 value={form.symbol}
                 readOnly
-                className="mt-1.5 w-full rounded-xl border border-border bg-surface-elevated/50 px-4 py-2.5 text-sm text-muted"
+                className="field mt-1.5 w-full px-4 py-2.5 text-muted"
               />
             ) : (
               <span className="mt-1.5 block">
@@ -181,7 +181,7 @@ export function InvestmentModal() {
                   shares: parseFloat(e.target.value) || 0,
                 }))
               }
-              className="mt-1.5 w-full rounded-xl border border-border bg-surface-elevated/50 px-4 py-2.5 text-sm focus:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent/20"
+              className="field mt-1.5 w-full px-4 py-2.5"
               placeholder="e.g. 10"
             />
             {errors.shares && (
@@ -204,7 +204,7 @@ export function InvestmentModal() {
                   avgCost: parseFloat(e.target.value) || 0,
                 }))
               }
-              className="mt-1.5 w-full rounded-xl border border-border bg-surface-elevated/50 px-4 py-2.5 text-sm focus:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent/20"
+              className="field mt-1.5 w-full px-4 py-2.5"
               placeholder={indiaHint ? "e.g. 2850.00" : "e.g. 178.50"}
             />
             <span className="mt-1 block text-xs text-muted">
@@ -226,7 +226,7 @@ export function InvestmentModal() {
               onChange={(e) =>
                 setForm((f) => ({ ...f, purchaseDate: e.target.value }))
               }
-              className="mt-1.5 w-full rounded-xl border border-border bg-surface-elevated/50 px-4 py-2.5 text-sm focus:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent/20"
+              className="field mt-1.5 w-full px-4 py-2.5"
             />
             {errors.purchaseDate && (
               <span className="mt-1 block text-xs text-loss">

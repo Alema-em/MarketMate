@@ -49,7 +49,7 @@ export function StockSearch({
         onFocus={() => setOpen(true)}
         onBlur={() => setTimeout(() => setOpen(false), 150)}
         placeholder={placeholder}
-        className="w-full rounded-xl border border-border bg-surface/60 py-2.5 pl-10 pr-10 text-sm text-foreground placeholder:text-muted backdrop-blur-xl focus:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent/20"
+        className="field w-full py-2.5 pl-10 pr-10"
         autoComplete="off"
       />
       {loading && (

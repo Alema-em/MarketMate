@@ -121,7 +121,7 @@ export default function PortfolioPage() {
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
               placeholder="Filter holdings…"
-              className="w-full max-w-md rounded-xl border border-border bg-surface/60 py-2.5 px-4 text-sm text-foreground placeholder:text-muted backdrop-blur-xl focus:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent/20"
+              className="field w-full max-w-md px-4 py-2.5"
             />
           </>
         )}

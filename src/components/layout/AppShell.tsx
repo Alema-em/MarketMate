@@ -27,7 +27,7 @@ export function AppShell({ children, title }: AppShellProps) {
           <MobileHeader onMenuClick={openMobile} title={title} />
           <main className="flex-1 overflow-auto p-4 sm:p-6 lg:p-8 scrollbar-thin">
             <header className="mb-6 hidden lg:block">
-              <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
+              <h1 className="font-serif text-4xl font-normal tracking-tight">{title}</h1>
             </header>
             {isDemo && (
               <span className="mb-6 block">

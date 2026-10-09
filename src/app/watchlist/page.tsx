@@ -50,20 +50,18 @@ export default function WatchlistPage() {
         )}
 
         {!isEmpty && (
-          <section className="glass-card flex flex-wrap gap-6 p-5">
+          <section className="glass-card flex flex-wrap gap-8 px-5 py-4">
             <span>
-              <p className="text-sm text-muted">Watching</p>
-              <p className="text-2xl font-bold">{items.length}</p>
+              <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">Watching</p>
+              <p className="mt-1 font-serif text-3xl leading-none">{items.length}</p>
             </span>
-            <span className="h-auto w-px bg-border hidden sm:block" />
             <span>
-              <p className="text-sm text-muted">Gainers today</p>
-              <p className="text-2xl font-bold text-gain">{gainers}</p>
+              <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">Gainers today</p>
+              <p className="mt-1 font-serif text-3xl leading-none text-gain">{gainers}</p>
             </span>
-            <span className="h-auto w-px bg-border hidden sm:block" />
             <span>
-              <p className="text-sm text-muted">Losers today</p>
-              <p className="text-2xl font-bold text-loss">{losers}</p>
+              <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">Losers today</p>
+              <p className="mt-1 font-serif text-3xl leading-none text-loss">{losers}</p>
             </span>
           </section>
         )}

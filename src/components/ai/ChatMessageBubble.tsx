@@ -14,10 +14,10 @@ export function ChatMessageBubble({ message }: ChatMessageBubbleProps) {
       className={`chat-message-enter flex min-w-0 gap-3 ${isUser ? "flex-row-reverse" : ""}`}
     >
       <div
-        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${
+        className={`flex h-8 w-8 shrink-0 items-center justify-center border ${
           isUser
-            ? "bg-accent/20 text-accent"
-            : "bg-gradient-to-br from-accent to-violet-500 text-white shadow-lg shadow-accent/20"
+            ? "border-[#f4f0e6]/40 bg-[#f4f0e6] text-[#1c1915]"
+            : "border-white/15 text-foreground"
         }`}
       >
         {isUser ? (
@@ -27,10 +27,10 @@ export function ChatMessageBubble({ message }: ChatMessageBubbleProps) {
         )}
       </div>
       <div
-        className={`min-w-0 max-w-[88%] overflow-hidden rounded-2xl px-4 py-3 sm:max-w-[75%] ${
+        className={`min-w-0 max-w-[88%] overflow-hidden px-4 py-3 sm:max-w-[75%] ${
           isUser
-            ? "bg-accent/15 border border-accent/25 text-foreground rounded-tr-md"
-            : "glass-card border border-border rounded-tl-md"
+            ? "bg-[#f4f0e6] text-[#1c1915]"
+            : "border border-white/10 bg-surface"
         }`}
       >
         {isUser ? (

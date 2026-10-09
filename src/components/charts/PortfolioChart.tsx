@@ -27,7 +27,7 @@ export function PortfolioChart({
     <section className="glass-card p-5 sm:p-6">
       <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <span>
-          <h2 className="text-lg font-semibold">{title}</h2>
+          <h2 className="font-serif text-2xl font-normal tracking-tight">{title}</h2>
           <p className="text-sm text-muted">12-month value trend</p>
         </span>
         <span className="flex gap-2">
@@ -35,10 +35,10 @@ export function PortfolioChart({
             <button
               key={period}
               type="button"
-              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.12em] transition-colors ${
                 period === "1Y"
-                  ? "bg-accent/15 text-accent"
-                  : "text-muted hover:bg-white/5 hover:text-foreground"
+                  ? "bg-white/[0.08] text-foreground"
+                  : "text-muted hover:text-foreground"
               }`}
             >
               {period}
@@ -52,8 +52,8 @@ export function PortfolioChart({
           <AreaChart data={data} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="portfolioGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#22c55e" stopOpacity={0.35} />
-                <stop offset="100%" stopColor="#22c55e" stopOpacity={0} />
+                <stop offset="0%" stopColor="#e7e5e4" stopOpacity={0.22} />
+                <stop offset="100%" stopColor="#e7e5e4" stopOpacity={0} />
               </linearGradient>
             </defs>
             <CartesianGrid
@@ -78,17 +78,17 @@ export function PortfolioChart({
               contentStyle={{
                 background: "#1a2332",
                 border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: "12px",
+                borderRadius: "2px",
                 boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
               }}
               labelStyle={{ color: "#94a3b8" }}
               formatter={(value: number) => [formatDisplay(value), "Value"]}
             />
             <Area
-              type="monotone"
+              type="linear"
               dataKey="value"
-              stroke="#22c55e"
-              strokeWidth={2}
+              stroke="#e7e5e4"
+              strokeWidth={1.5}
               fill="url(#portfolioGradient)"
             />
           </AreaChart>

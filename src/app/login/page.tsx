@@ -2,22 +2,63 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { TrendingUp, ChartColumn, Shield, Zap, ChartLine } from "lucide-react";
+import { Mark } from "@/components/brand/Mark";
 import { useAuth } from "@/context/AuthContext";
-import { Button } from "@/components/ui/Button";
 import { getFriendlyAuthError } from "@/lib/errors/user-messages";
+
+/** Illustrative only. Value = shares × last. Day dollars reconcile to +0.43%. */
+const POSITIONS = [
+  { symbol: "AAPL", name: "Apple", shares: "24", last: "227.40", day: "+0.82%", up: true, value: "5,457.60" },
+  { symbol: "MSFT", name: "Microsoft", shares: "10", last: "418.55", day: "−0.31%", up: false, value: "4,185.50" },
+  { symbol: "NVDA", name: "NVIDIA", shares: "15", last: "131.20", day: "+1.94%", up: true, value: "1,968.00" },
+  { symbol: "SPY", name: "S&P 500", shares: "18", last: "562.15", day: "+0.22%", up: true, value: "10,118.70" },
+] as const;
+
+type NySession = { time: string; state: "Open" | "Closed" };
+
+function readNySession(now: Date): NySession {
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/New_York",
+      weekday: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hourCycle: "h23",
+    })
+      .formatToParts(now)
+      .map((part) => [part.type, part.value])
+  );
+
+  const minutes = Number(parts.hour) * 60 + Number(parts.minute);
+  const weekday = ["Mon", "Tue", "Wed", "Thu", "Fri"].includes(parts.weekday);
+  const open = weekday && minutes >= 9 * 60 + 30 && minutes < 16 * 60;
+
+  return {
+    time: `${parts.hour}:${parts.minute}:${parts.second}`,
+    state: open ? "Open" : "Closed",
+  };
+}
 
 export default function LoginPage() {
   const { user, loading, signInWithGoogle, firebaseReady } = useAuth();
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [signingIn, setSigningIn] = useState(false);
+  const [session, setSession] = useState<NySession | null>(null);
 
   useEffect(() => {
     if (!loading && user) {
       router.replace("/dashboard");
     }
   }, [user, loading, router]);
+
+  useEffect(() => {
+    const update = () => setSession(readNySession(new Date()));
+    update();
+    const id = window.setInterval(update, 1000);
+    return () => window.clearInterval(id);
+  }, []);
 
   const handleGoogleSignIn = async () => {
     setError(null);
@@ -31,139 +72,226 @@ export default function LoginPage() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="h-10 w-10 animate-spin rounded-full border-2 border-accent/30 border-t-accent" />
-      </div>
-    );
-  }
+  const busy = loading || signingIn;
 
   return (
-    <main className="grid min-h-screen lg:grid-cols-[minmax(0,58%)_minmax(380px,42%)] xl:grid-cols-[minmax(0,56%)_minmax(420px,44%)]">
-      <section className="relative hidden min-w-0 overflow-hidden bg-surface lg:flex lg:flex-col lg:px-8 lg:py-8 xl:px-12 xl:py-10">
-        <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-br from-accent/20 via-transparent to-emerald-500/10"
-          aria-hidden
-        />
-
-        <header className="relative flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-accent to-emerald-500 shadow-xl shadow-accent/30">
-            <TrendingUp className="h-6 w-6 text-white" />
+    <main className="min-h-dvh bg-background text-foreground">
+      <header className="border-b border-white/[0.08]">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
+          <div className="flex items-center gap-2.5">
+            <Mark />
+            <span className="text-[15px] font-medium tracking-tight">MarketMate</span>
           </div>
-          <div>
-            <h1 className="text-2xl font-bold">MarketMate</h1>
-            <p className="text-sm text-muted">Your portfolio, simplified</p>
-          </div>
-        </header>
-
-        <div className="relative flex flex-1 items-center py-10">
-          <section className="max-w-lg">
-            <h2 className="text-4xl font-bold leading-tight tracking-tight xl:text-5xl">
-              Invest smarter with clarity
-            </h2>
-            <p className="mt-4 max-w-md text-base leading-relaxed text-muted xl:text-lg">
-              Track holdings, monitor your watchlist, and visualize performance -
-              all in one modern dashboard.
+          <div className="text-right font-mono">
+            <p className="text-[13px] tabular-nums tracking-tight">
+              {session ? session.time : "––:––:––"}
+              <span className="ml-1.5 text-muted">ET</span>
             </p>
-            <ul className="mt-8 space-y-3.5">
-              {[
-                { icon: ChartLine, text: "Live prices via Alpha Vantage" },
-                { icon: ChartColumn, text: "Real-time P/L on every holding" },
-                { icon: Shield, text: "Secure Google authentication" },
-                { icon: Zap, text: "Fast, mobile-friendly experience" },
-              ].map(({ icon: Icon, text }) => (
-                <li key={text} className="flex items-center gap-3 text-muted">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent">
-                    <Icon className="h-4 w-4" />
-                  </div>
-                  <span>{text}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
+            <p className="text-[11px] text-muted">
+              New York ·{" "}
+              <span className={session?.state === "Open" ? "text-gain" : "text-foreground/80"}>
+                {session ? session.state : "—"}
+              </span>
+            </p>
+          </div>
         </div>
+      </header>
 
-        <p className="relative text-sm text-muted">
-          (c) {new Date().getFullYear()} MarketMate - Live market data
-        </p>
-      </section>
-
-      <section className="flex min-w-0 items-center justify-center px-6 py-8 sm:px-10 lg:px-8 xl:px-12">
-        <div className="w-full max-w-[440px]">
-          <div className="mb-8 flex items-center gap-3 lg:hidden">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-accent to-emerald-500">
-              <TrendingUp className="h-5 w-5 text-white" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold">MarketMate</h1>
-              <p className="text-xs text-muted">Portfolio Tracker</p>
-            </div>
+      <div className="mx-auto max-w-6xl px-5 py-8 sm:px-8 sm:pt-12 sm:pb-10">
+        <div className="grid items-end gap-10 lg:grid-cols-[minmax(0,1fr)_17rem] lg:gap-x-16">
+          <div>
+            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
+              Portfolio tracker
+            </p>
+            <h1 className="mt-3 font-serif text-[clamp(1.9rem,5vw,4.25rem)] leading-[0.96] tracking-[-0.02em]">
+              What you own,
+              <br />
+              <span className="italic">and what it did today.</span>
+            </h1>
+            <p className="mt-5 max-w-sm text-[15px] leading-relaxed text-muted sm:text-base">
+              Holdings, a watchlist, and live P/L — in the currency you use.
+            </p>
           </div>
 
-          <div className="glass-card p-6 shadow-2xl shadow-black/20 sm:p-8">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-gain/20 bg-gain-muted px-3 py-1 text-xs font-medium text-gain">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-gain" />
-              Markets connected
-            </div>
-            <h2 className="text-2xl font-bold">Welcome back</h2>
-            <p className="mt-2 text-muted">
-              Sign in to track holdings, watchlists, and live gains in one place.
+          <div className="lg:pb-1">
+            <h2 className="text-lg font-medium tracking-tight">Sign in</h2>
+            <p className="mt-1.5 text-sm leading-relaxed text-muted">
+              A Google account is enough.
             </p>
 
             {!firebaseReady && (
-              <p className="mt-4 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
+              <p className="mt-4 border-l-2 border-amber-400/80 pl-3 text-sm leading-relaxed text-amber-100">
                 Firebase is not configured. Add credentials to{" "}
-                <code className="text-amber-100">.env.local</code> to enable sign-in.
-                You can still explore the UI after configuring Firebase.
+                <code className="text-amber-50">.env.local</code> to enable sign-in.
               </p>
             )}
 
             {error && (
-              <p className="mt-4 rounded-xl border border-loss/30 bg-loss-muted px-4 py-3 text-sm text-loss">
+              <p
+                role="alert"
+                className="mt-4 border-l-2 border-loss pl-3 text-sm leading-relaxed text-loss"
+              >
                 {error}
               </p>
             )}
 
-            <Button
-              className="mt-6 w-full"
-              size="lg"
-              loading={signingIn}
-              disabled={!firebaseReady}
+            <button
+              type="button"
               onClick={handleGoogleSignIn}
+              disabled={!firebaseReady || busy}
+              className="mt-5 flex h-12 w-full items-center justify-center gap-3 rounded-md bg-[#f4f0e6] text-[15px] font-medium text-[#1c1915] transition-colors hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f4f0e6] disabled:cursor-not-allowed disabled:opacity-50"
             >
-              <GoogleIcon />
-              Continue with Google
-            </Button>
-
-            <p className="mt-6 text-center text-xs text-muted">
-              By signing in, you agree to our Terms of Service and Privacy Policy.
+              {busy ? (
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#1c1915]/25 border-t-[#1c1915]" />
+              ) : (
+                <GoogleMark />
+              )}
+              {loading ? "Checking session" : signingIn ? "Opening Google" : "Continue with Google"}
+            </button>
+            <p className="mt-3 text-xs leading-relaxed text-muted">
+              Your book stays on your account.
             </p>
           </div>
         </div>
-      </section>
+
+        <figure className="mt-10 border border-[#f4f0e6]/15 bg-[#f4f0e6] text-[#1c1915] sm:mt-12">
+          <div className="flex flex-col gap-4 px-4 pt-4 sm:flex-row sm:items-end sm:justify-between sm:px-5 sm:pt-5">
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#5c564c]">
+                Illustrative book
+              </p>
+              <p className="mt-1 text-sm text-[#5c564c]">Sample prices, not your account</p>
+            </div>
+            <div className="sm:text-right">
+              <p className="font-serif text-[1.75rem] leading-none tracking-tight sm:text-4xl">
+                $21,729.80
+              </p>
+              <p className="mt-1.5 font-mono text-xs tabular-nums text-[#0f7a32]">
+                +92.22 · +0.43%
+              </p>
+            </div>
+          </div>
+
+          <SessionLine />
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <caption className="sr-only">
+                Illustrative portfolio of four positions with sample prices
+              </caption>
+              <thead>
+                <tr className="font-mono text-[11px] uppercase tracking-[0.14em] text-[#5c564c]">
+                  <th scope="col" className="px-4 py-2 font-medium sm:px-5">
+                    Symbol
+                  </th>
+                  <th scope="col" className="hidden px-3 py-2 text-right font-medium sm:table-cell">
+                    Shares
+                  </th>
+                  <th scope="col" className="px-3 py-2 text-right font-medium">
+                    Last
+                  </th>
+                  <th scope="col" className="px-3 py-2 text-right font-medium">
+                    Day
+                  </th>
+                  <th scope="col" className="hidden px-4 py-2 text-right font-medium md:table-cell sm:px-5">
+                    Value
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {POSITIONS.map((position) => (
+                  <tr key={position.symbol} className="border-t border-[#1c1915]/10">
+                    <th scope="row" className="px-4 py-3 text-left font-medium sm:px-5">
+                      {position.symbol}
+                      <span className="ml-2 hidden font-normal text-[#5c564c] sm:inline">
+                        {position.name}
+                      </span>
+                    </th>
+                    <td className="hidden px-3 py-3 text-right font-mono tabular-nums text-[#5c564c] sm:table-cell">
+                      {position.shares}
+                    </td>
+                    <td className="px-3 py-3 text-right font-mono tabular-nums">
+                      {position.last}
+                    </td>
+                    <td
+                      className={`px-3 py-3 text-right font-mono tabular-nums ${
+                        position.up ? "text-[#0f7a32]" : "text-[#b42318]"
+                      }`}
+                    >
+                      {position.day}
+                    </td>
+                    <td className="hidden px-4 py-3 text-right font-mono tabular-nums md:table-cell sm:px-5">
+                      {position.value}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <figcaption className="border-t border-[#1c1915]/10 px-4 py-3 text-xs text-[#5c564c] sm:px-5">
+            Sign in to replace this sample with your book.
+          </figcaption>
+        </figure>
+      </div>
     </main>
   );
 }
 
-function GoogleIcon() {
+function SessionLine() {
   return (
-    <svg className="h-5 w-5" viewBox="0 0 24 24" aria-hidden>
-      <path
-        fill="currentColor"
-        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+    <svg
+      viewBox="0 0 800 88"
+      className="mt-4 h-20 w-full sm:h-28"
+      role="img"
+      aria-label="Sample session, closing above the open"
+    >
+      <line
+        x1="0"
+        y1="62"
+        x2="800"
+        y2="62"
+        stroke="#1c1915"
+        strokeOpacity="0.18"
+        strokeDasharray="2 5"
       />
       <path
-        fill="currentColor"
-        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+        d="M0 62 L52 58 L98 66 L150 54 L198 57 L252 44 L304 48 L360 36 L412 41 L470 28 L528 32 L584 20 L640 24 L700 16 L748 18 L792 12 L792 88 L0 88 Z"
+        fill="#1c1915"
+        fillOpacity="0.05"
       />
       <path
-        fill="currentColor"
-        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+        className="login-spark"
+        pathLength={1}
+        d="M0 62 L52 58 L98 66 L150 54 L198 57 L252 44 L304 48 L360 36 L412 41 L470 28 L528 32 L584 20 L640 24 L700 16 L748 18 L792 12"
+        fill="none"
+        stroke="#1c1915"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      />
+      <circle cx="792" cy="12" r="2.75" fill="#0f7a32" />
+    </svg>
+  );
+}
+
+function GoogleMark() {
+  return (
+    <svg className="h-[18px] w-[18px]" viewBox="0 0 18 18" aria-hidden>
+      <path
+        fill="#4285F4"
+        d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"
       />
       <path
-        fill="currentColor"
-        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+        fill="#34A853"
+        d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M3.964 10.706A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.706V4.962H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.038l3.007-2.332z"
+      />
+      <path
+        fill="#EA4335"
+        d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.962L3.964 7.294C4.672 5.167 6.656 3.58 9 3.58z"
       />
     </svg>
   );

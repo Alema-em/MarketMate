@@ -6,7 +6,6 @@ import {
   LayoutDashboard,
   Briefcase,
   Star,
-  TrendingUp,
   Sparkles,
   Bot,
   GraduationCap,
@@ -14,6 +13,7 @@ import {
   X,
   Menu,
 } from "lucide-react";
+import { Mark } from "@/components/brand/Mark";
 import { useAuth } from "@/context/AuthContext";
 import { CurrencySelector } from "@/components/settings/CurrencySelector";
 import { useRouter } from "next/navigation";
@@ -46,17 +46,17 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
 
   const NavContent = () => (
     <>
-      <div className="flex items-center gap-3 px-2 py-1">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-accent to-emerald-500 shadow-lg shadow-accent/30">
-          <TrendingUp className="h-5 w-5 text-white" />
-        </div>
+      <div className="flex items-center gap-2.5 px-2 py-1">
+        <Mark />
         <div>
-          <h1 className="text-lg font-bold tracking-tight">MarketMate</h1>
-          <p className="text-xs text-muted">Portfolio Tracker</p>
+          <h1 className="text-[15px] font-medium tracking-tight">MarketMate</h1>
+          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
+            Portfolio
+          </p>
         </div>
       </div>
 
-      <nav className="mt-8 flex flex-1 flex-col gap-1">
+      <nav className="mt-8 flex flex-1 flex-col gap-0.5">
         {navItems.map(({ href, label, icon: Icon }) => {
           const isActive =
             pathname === href || pathname.startsWith(`${href}/`);
@@ -65,10 +65,10 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
               key={href}
               href={href}
               onClick={onMobileClose}
-              className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
+              className={`flex items-center gap-3 px-3 py-2.5 text-sm transition-colors ${
                 isActive
-                  ? "bg-accent/15 text-accent border border-accent/20"
-                  : "text-muted hover:bg-white/5 hover:text-foreground"
+                  ? "bg-white/[0.06] text-foreground"
+                  : "text-muted hover:bg-white/[0.04] hover:text-foreground"
               }`}
             >
               <Icon className="h-5 w-5 shrink-0" />
@@ -81,7 +81,7 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
       <div className="mt-auto border-t border-border pt-4">
         <CurrencySelector />
         {user && (
-          <div className="mb-3 flex items-center gap-3 rounded-xl bg-surface-elevated/50 px-3 py-2.5">
+          <div className="mb-3 flex items-center gap-3 border border-white/10 px-3 py-2.5">
             {user.photoURL ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -90,7 +90,7 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
                 className="h-9 w-9 rounded-full ring-2 ring-border"
               />
             ) : (
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-accent/20 text-sm font-semibold text-accent">
+              <span className="flex h-9 w-9 items-center justify-center border border-white/15 text-sm font-medium">
                 {user.displayName?.[0] ?? "U"}
               </span>
             )}
@@ -105,7 +105,7 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
         <button
           type="button"
           onClick={() => void handleSignOut()}
-          className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted transition-colors hover:bg-loss-muted hover:text-loss"
+          className="flex w-full items-center gap-3 px-3 py-2.5 text-sm text-muted transition-colors hover:bg-loss-muted hover:text-loss"
         >
           <LogOut className="h-5 w-5" />
           Sign out
@@ -117,7 +117,7 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex lg:w-64 lg:flex-col lg:border-r lg:border-border lg:bg-surface/40 lg:backdrop-blur-xl lg:p-6">
+      <aside className="hidden lg:flex lg:w-60 lg:flex-col lg:border-r lg:border-white/10 lg:bg-background lg:px-4 lg:py-6">
         <NavContent />
       </aside>
 
@@ -132,7 +132,7 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
 
       {/* Mobile drawer */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-border bg-surface p-6 transition-transform duration-300 lg:hidden ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-white/10 bg-background p-6 transition-transform duration-300 lg:hidden ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -158,7 +158,7 @@ export function MobileHeader({
   title: string;
 }) {
   return (
-    <header className="sticky top-0 z-30 flex items-center gap-4 border-b border-border bg-background/80 px-4 py-3 backdrop-blur-xl lg:hidden">
+    <header className="sticky top-0 z-30 flex items-center gap-4 border-b border-white/10 bg-background px-4 py-3 lg:hidden">
       <button
         type="button"
         onClick={onMenuClick}
@@ -167,7 +167,7 @@ export function MobileHeader({
       >
         <Menu className="h-5 w-5" />
       </button>
-      <h1 className="text-lg font-semibold">{title}</h1>
+      <h1 className="font-serif text-2xl font-normal tracking-tight">{title}</h1>
     </header>
   );
 }

@@ -34,7 +34,7 @@ export function StockCard({
     <article className="glass-card-hover p-4 sm:p-5">
       <header className="flex items-start justify-between gap-3">
         <span className="flex items-center gap-3 min-w-0">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-surface-elevated text-sm font-bold text-foreground ring-1 ring-border">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-white/15 font-mono text-xs font-medium text-foreground">
             {stock.symbol.slice(0, 2)}
           </span>
           <span className="min-w-0">
@@ -49,7 +49,7 @@ export function StockCard({
         </span>
         <span className="flex items-start gap-2 shrink-0">
           <span
-            className={`inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold ${
+            className={`inline-flex items-center gap-1 px-2 py-1 font-mono text-xs tabular-nums ${
               isPositive ? "bg-gain-muted text-gain" : "bg-loss-muted text-loss"
             }`}
           >
@@ -129,8 +129,8 @@ function Metric({
 }) {
   return (
     <span className="flex flex-col">
-      <span className="text-xs text-muted">{label}</span>
-      <span className="mt-0.5 text-sm font-semibold text-foreground">{value}</span>
+      <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">{label}</span>
+      <span className="mt-1 font-mono text-sm tabular-nums text-foreground">{value}</span>
       {sub && (
         <span
           className={`text-xs font-medium ${

@@ -18,7 +18,7 @@ export function WatchlistCard({ item, onRemove }: WatchlistCardProps) {
   return (
     <article className="glass-card-hover flex items-center justify-between gap-4 p-4">
       <span className="flex items-center gap-3 min-w-0">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-surface-elevated text-xs font-bold ring-1 ring-border">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-white/15 font-mono text-xs">
           {item.symbol.slice(0, 2)}
         </span>
         <span className="min-w-0">
@@ -29,9 +29,11 @@ export function WatchlistCard({ item, onRemove }: WatchlistCardProps) {
 
       <span className="flex items-center gap-4 shrink-0">
         <span className="text-right">
-          <p className="font-semibold">{formatAmount(item.currentPrice, currency)}</p>
+          <p className="font-mono text-sm tabular-nums">
+            {formatAmount(item.currentPrice, currency)}
+          </p>
           <p
-            className={`flex items-center justify-end gap-1 text-sm font-medium ${
+            className={`flex items-center justify-end gap-1 font-mono text-xs tabular-nums ${
               isPositive ? "text-gain" : "text-loss"
             }`}
           >

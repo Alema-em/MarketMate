@@ -15,27 +15,21 @@ import { formatPercent } from "@/lib/finance";
 export function DemoInsightsPanel({ compact = false }: { compact?: boolean }) {
   return (
     <section
-      className={`glass-card relative overflow-hidden ${compact ? "p-5" : "p-6 sm:p-8"}`}
+      className={`glass-card ${compact ? "p-5" : "p-6 sm:p-8"}`}
     >
-      <span
-        className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-violet-500/15 blur-3xl"
-        aria-hidden
-      />
-      <header className="relative flex items-start gap-4">
-        <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-accent to-violet-500 shadow-lg shadow-accent/25">
-          <Bot className="h-6 w-6 text-white" />
-        </span>
-        <span>
-          <span className="inline-flex items-center gap-2 rounded-full bg-gain-muted px-3 py-1 text-xs font-medium text-gain">
-            <Sparkles className="h-3.5 w-3.5" />
-            AI preview · Demo portfolio
-          </span>
-          <h2 className="mt-2 text-xl font-semibold">Portfolio intelligence</h2>
-          <p className="mt-1 max-w-2xl text-sm text-muted">{DEMO_INSIGHTS.summary}</p>
-        </span>
+      <header>
+        <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
+          Demo portfolio
+        </p>
+        <h2 className="mt-2 font-serif text-3xl font-normal tracking-tight">
+          Portfolio intelligence
+        </h2>
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
+          {DEMO_INSIGHTS.summary}
+        </p>
       </header>
 
-      <div className="relative mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatPill
           label="Risk score"
           value={`${DEMO_INSIGHTS.riskScore}/10`}
@@ -56,7 +50,7 @@ export function DemoInsightsPanel({ compact = false }: { compact?: boolean }) {
         <StatPill label="Positions" value="10" sub="5 stocks · 3 ETFs · 2 crypto" />
       </div>
 
-      <div className="relative mt-6 grid gap-6 lg:grid-cols-2">
+      <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <article className="rounded-xl border border-border bg-surface-elevated/40 p-5">
           <span className="flex items-center gap-2 text-sm font-semibold">
             <PieChart className="h-4 w-4 text-accent" />
@@ -100,7 +94,7 @@ export function DemoInsightsPanel({ compact = false }: { compact?: boolean }) {
       </div>
 
       {!compact && (
-        <ul className="relative mt-6 grid gap-3 sm:grid-cols-3">
+        <ul className="mt-6 grid gap-3 sm:grid-cols-3">
           {[
             {
               icon: TrendingUp,
@@ -145,9 +139,9 @@ function StatPill({
   positive?: boolean;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-surface-elevated/30 px-4 py-3">
-      <p className="text-xs text-muted">{label}</p>
-      <p className="mt-1 text-lg font-semibold">{value}</p>
+    <div className="border border-white/10 bg-background px-4 py-3">
+      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">{label}</p>
+      <p className="mt-1 font-serif text-2xl leading-none">{value}</p>
       <p
         className={`text-xs font-medium ${
           positive === true

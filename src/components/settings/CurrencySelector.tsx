@@ -38,7 +38,7 @@ export function CurrencySelector() {
           onChange={(e) =>
             setDisplayCurrency(e.target.value as DisplayCurrency)
           }
-          className="w-full appearance-none rounded-xl border border-border bg-surface-elevated/60 py-2.5 pl-3 pr-9 text-sm font-medium text-foreground backdrop-blur-xl transition-colors focus:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent/20"
+          className="field w-full appearance-none py-2.5 pl-3 pr-9 font-medium"
         >
           {SUPPORTED_DISPLAY_CURRENCIES.map((code) => (
             <option key={code} value={code} className="bg-surface text-foreground">

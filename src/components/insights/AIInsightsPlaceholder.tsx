@@ -27,34 +27,21 @@ export function AIInsightsPlaceholder({
   }
 
   return (
-    <section className="glass-card relative overflow-hidden p-6 sm:p-8">
-      <span
-        className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-accent/10 blur-3xl"
-        aria-hidden
-      />
-      <span
-        className="pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-emerald-500/10 blur-3xl"
-        aria-hidden
-      />
-
-      <header className="relative flex items-start gap-4">
-        <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-accent to-violet-500 shadow-lg shadow-accent/25">
-          <Bot className="h-6 w-6 text-white" />
-        </span>
-        <span>
-          <span className="inline-flex items-center gap-2 rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
-            <Sparkles className="h-3.5 w-3.5" />
-            Coming soon
-          </span>
-          <h2 className="mt-2 text-xl font-semibold">AI Portfolio Insights</h2>
-          <p className="mt-1 max-w-xl text-sm text-muted">
-            Personalized analysis, risk alerts, and smart rebalancing suggestions
-            powered by AI — integrated in a future release.
-          </p>
-        </span>
+    <section className="glass-card p-6 sm:p-8">
+      <header>
+        <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
+          Coming soon
+        </p>
+        <h2 className="mt-2 font-serif text-3xl font-normal tracking-tight">
+          Portfolio insights
+        </h2>
+        <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted">
+          Personalized analysis, risk alerts, and smart rebalancing suggestions
+          powered by AI — integrated in a future release.
+        </p>
       </header>
 
-      <ul className="relative mt-8 grid gap-3 sm:grid-cols-3">
+      <ul className="mt-8 grid gap-3 sm:grid-cols-3">
         {[
           {
             icon: Sparkles,
@@ -74,7 +61,7 @@ export function AIInsightsPlaceholder({
         ].map(({ icon: Icon, title, desc }) => (
           <li
             key={title}
-            className="rounded-xl border border-border bg-surface-elevated/40 p-4"
+            className="border border-white/10 bg-background p-4"
           >
             <Icon className="h-5 w-5 text-accent" />
             <h3 className="mt-3 text-sm font-semibold">{title}</h3>
@@ -86,7 +73,7 @@ export function AIInsightsPlaceholder({
       <button
         type="button"
         disabled
-        className="relative mt-6 w-full cursor-not-allowed rounded-xl border border-dashed border-border bg-white/5 px-4 py-3 text-sm font-medium text-muted sm:w-auto"
+        className="mt-6 w-full cursor-not-allowed border border-dashed border-white/15 px-4 py-3 text-sm text-muted sm:w-auto"
       >
         Enable AI insights (coming soon)
       </button>

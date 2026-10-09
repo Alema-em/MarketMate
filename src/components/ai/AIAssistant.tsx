@@ -76,11 +76,11 @@ export function AIAssistant({
     >
       <header className="flex items-center justify-between gap-4 border-b border-border bg-surface-elevated/30 px-4 py-4 sm:px-5">
         <div className="flex min-w-0 items-center gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-accent to-violet-500 shadow-lg shadow-accent/25">
-            <Bot className="h-5 w-5 text-white" />
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-white/15">
+            <Bot className="h-4 w-4" />
           </div>
           <div className="min-w-0">
-            <h2 className="font-semibold tracking-tight">MarketMate AI</h2>
+            <h2 className="font-serif text-2xl font-normal leading-none tracking-tight">Copilot</h2>
             <p className="text-xs text-muted">
               Educational investing copilot - Not financial advice
             </p>
@@ -136,10 +136,10 @@ export function AIAssistant({
 
         {loading && (
           <div className="chat-message-enter flex min-w-0 gap-3">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-accent to-violet-500 text-white">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center border border-white/15">
               <Bot className="h-4 w-4" />
             </div>
-            <div className="glass-card rounded-2xl rounded-tl-md border border-border">
+            <div className="border border-white/10 bg-surface">
               <TypingIndicator />
             </div>
           </div>
@@ -155,7 +155,7 @@ export function AIAssistant({
 
       <form
         onSubmit={handleSubmit}
-        className="border-t border-border bg-surface/60 p-4 sm:p-5 backdrop-blur-xl"
+        className="border-t border-white/10 bg-background p-4 sm:p-5"
       >
         {messages.length > 0 && messages.length < 4 && (
           <div className="mb-3 block sm:hidden">
@@ -176,7 +176,7 @@ export function AIAssistant({
             placeholder="Ask about investing, your portfolio, or market concepts..."
             rows={1}
             disabled={loading}
-            className="max-h-32 min-h-[44px] min-w-0 flex-1 resize-none rounded-xl border border-border bg-surface-elevated/50 px-4 py-3 text-sm leading-relaxed placeholder:text-muted focus:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent/20 disabled:opacity-60"
+            className="field max-h-32 min-h-[44px] min-w-0 flex-1 resize-none px-4 py-3 leading-relaxed disabled:opacity-60"
           />
           <Button
             type="submit"
